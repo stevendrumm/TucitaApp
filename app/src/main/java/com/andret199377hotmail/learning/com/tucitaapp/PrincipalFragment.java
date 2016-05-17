@@ -11,6 +11,7 @@ import android.view.ViewGroup;
  */
 public class PrincipalFragment extends Fragment {
 
+
     public PrincipalFragment() {
     }
 

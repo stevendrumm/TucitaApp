@@ -17,16 +17,17 @@
             android:text="Hola Mundo!" />
 
     </RelativeLayout>
-
     <ListView
         android:id="@+id/list_view"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="left"
-        android:background="#007095"
+        android:background="#169500"
         android:choiceMode="singleChoice"
-        android:divider="#005875"
+        android:divider="#00751f"
         android:dividerHeight="2dp" />
+
+
 
 </android.support.v4.widget.DrawerLayout>
 
