@@ -7,4 +7,30 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="emailUser">android.studio@android.com</string>
     <string name="Preferences">Preferencias</string>
+    <string name="title_activity_login">Registro</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_spinner">Selecccione tipo de documento</string>
+    <string name="prompt_documento">Documento</string>
+    <string name="prompt_nombre1">Primer nombre</string>
+    <string name="prompt_nombre2">Segundo nombre</string>
+    <string name="prompt_apellido1">Primer apellido</string>
+    <string name="prompt_apellido2">Segundo apellido</string>
+    <string name="action_sign_in">Registrar</string>
+    <string name="action_sign_in_short">Registro</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">Este campo es requerido</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <string-array name="TipoDocumento">
+        <item>Cedula de ciudadania</item>
+        <item>Tarjeta de indentidad</item>
+        <item>Cedula de extranjeria</item>
+        <item>Registro civil</item>
+        <item>Pasaporte</item>
+    </string-array>
 </resources>
