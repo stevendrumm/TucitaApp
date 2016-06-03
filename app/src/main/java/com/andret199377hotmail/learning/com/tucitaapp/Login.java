@@ -5,31 +5,22 @@ package com.andret199377hotmail.learning.com.tucitaapp;
  */
 public class Login {
 
-        private int TIPDOCUM;
+        public String TIPDOCUM;
 
-        private String NUMDOCUM;
+        public String NUMDOCUM;
 
-        private String APELLIDO1;
+        public String APELLIDO1;
 
-        private String APELLIDO2;
+        public String APELLIDO2;
 
-        private String NOMBRE1;
+        public String NOMBRE1;
 
-        private String NOMBRE2;
-
-    public Login() {
-
-        this.TIPDOCUM = Integer.parseInt(null);
-        this.NUMDOCUM = null;
-        this.NOMBRE1 = null;
-        this.NOMBRE2 = null;
-        this.APELLIDO1 = null;
-        this.APELLIDO2 = null;
-
-    }
+        public String NOMBRE2;
 
 
-    public Login( int tipodocumento, String numerodocumento, String nombre1, String nombre2, String apellido1, String apellido2) {
+
+
+    public Login( String tipodocumento, String numerodocumento, String nombre1, String nombre2, String apellido1, String apellido2) {
 
         this.TIPDOCUM = tipodocumento;
         this.NUMDOCUM = numerodocumento;
@@ -43,7 +34,7 @@ public class Login {
     // Aquí los métodos get
 
 
-    public int gettipo(){
+    public String gettipo(){
         return this.TIPDOCUM;
     }
     public String getNum(){

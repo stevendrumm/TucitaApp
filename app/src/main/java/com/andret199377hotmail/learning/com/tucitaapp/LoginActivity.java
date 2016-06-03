@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.JsonReader;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,21 +35,27 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
+
+import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 
 import java.net.URL;
-/*
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-*/
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A login screen that offers login via email/password.
@@ -123,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
         // Store values at the time of the login attempt.
         String tipoDocumento = Integer.toString(mTipoDocumentoView.getSelectedItemPosition() + 1);
         String Documento = mDocumentoView.getText().toString();
-        String login = "http://186.170.16.38/autenticacion/recurso/usuarios.php";
+        String login = "http://186.170.16.38/autenticacion/recurso/usuario.php";
 
         boolean cancel = false;
         View focusView = null;
@@ -149,10 +156,12 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnected()) {
-                    //Toast.makeText(LoginActivity.this, "tipodocumento="+tipoDocumento+"&documento=" + Documento, Toast.LENGTH_LONG).show();
-                    new UserLoginTask(tipoDocumento, Documento, login).execute();
-                } else {
+                //Toast.makeText(LoginActivity.this, "tipodocumento="+tipoDocumento+"&documento=" + Documento, Toast.LENGTH_LONG).show();
+                if (networkInfo != null && networkInfo.isConnected()){
+                    AsyncTask tarea = new UserLoginTask().execute(tipoDocumento, Documento, login);
+
+                }
+                else {
                     Toast.makeText(this, "Error de conexión", Toast.LENGTH_LONG).show();
                 }
 
@@ -247,58 +256,94 @@ public class LoginActivity extends AppCompatActivity {
      * the user.
      */
     private class UserLoginTask extends AsyncTask<String, Void, Login> {
-        String tipo;
-        String documento;
-        String login;
 
-        UserLoginTask(String tipoDocumento, String documento, String login){
-            this.tipo = tipoDocumento;
-            this.documento = documento;
-            this.login = login;
-
-        }
 
         @Override
         protected Login doInBackground(String... parametros) {
             // TODO: attempt authentication against a network service.
 
-            HttpURLConnection con = null;
+            String tipo = null;
+            String documento = null;
+            String nombre1 = null;
+            String nombre2 = null;
+            String apellido1 = null;
+            String apellido2 = null;
+
+            HttpURLConnection conn = null;
             Login response = null;
 
             try {
-                String request = "tipo=".concat(this.tipo).concat("&documento=".concat(this.documento));
-                URL login = new URL(this.login);
-                con = (HttpURLConnection) login.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.getOutputStream().write(request.getBytes("UTF-8"));
-                con.connect();
-                int statusCode = con.getResponseCode();
+                URL login = new URL(parametros[2]);
+                Log.i("error", parametros[2]);
+                conn = (HttpURLConnection) login.openConnection();
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("tipo", parametros[0])
+                        .appendQueryParameter("documento", parametros[1]);
+                String query = builder.build().getEncodedQuery();
+
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+                int statusCode = conn.getResponseCode();
                 if (statusCode == 200) {
-                    Gson gson = new Gson();
-                    InputStream in = new BufferedInputStream(con.getInputStream());
-                    JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
-                    reader.beginArray();
+                    InputStream respuesta = new BufferedInputStream(conn.getInputStream());
+                    JsonReader reader = new JsonReader(new InputStreamReader(respuesta, "UTF-8"));
+                    reader.beginObject();
 
-                    try {
-                        response = gson.fromJson(String.valueOf(reader), Login.class);
-                    } catch (JsonSyntaxException e) {
-                        e.printStackTrace();
+                    while (reader.hasNext()) {
+                        String name = reader.nextName();
+                        //Log.i("mensaje",name);
+
+                        switch (name) {
+                            case "TIPDOCUM":
+                                tipo = reader.nextString();
+                                break;
+                            case "NUMDOCUM":
+                                documento = reader.nextString();
+                                break;
+                            case "NOMBRE1":
+                                nombre1 = reader.nextString();
+                                break;
+                            case "NOMBRE2":
+                                nombre2 = reader.nextString();
+                                break;
+                            case "APELLIDO1":
+                                apellido1 = reader.nextString();
+                                break;
+                            case "APELLIDO2":
+                                apellido2 = reader.nextString();
+                                break;
+                            default:
+                                reader.skipValue();
+                                break;
+                        }
+
                     }
-
-                    reader.endArray();
+                    reader.endObject();
                     reader.close();
+                    response =  new Login(tipo,documento,nombre1,nombre2,apellido1, apellido2);
+
 
 
                 } else {
+                    Log.i("error",String.valueOf(statusCode));
                     response = null;
 
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 response = null;
-            }finally{
-                if (con!=null) con.disconnect();
+            } finally{
+                if (conn!=null) conn.disconnect();
             }
             return response;
         }
@@ -309,6 +354,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success!=null) {
+                //Toast.makeText(LoginActivity.this,success.TIPDOCUM.concat(success.NUMDOCUM).concat(success.APELLIDO1).concat(success.NOMBRE1),Toast.LENGTH_LONG).show();
 
                 registrar();
                 finish();
