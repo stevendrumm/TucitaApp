@@ -33,4 +33,7 @@
         <item>Registro civil</item>
         <item>Pasaporte</item>
     </string-array>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+
 </resources>

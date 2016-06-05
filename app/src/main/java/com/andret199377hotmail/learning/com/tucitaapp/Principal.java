@@ -1,5 +1,6 @@
 package com.andret199377hotmail.learning.com.tucitaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -68,6 +69,11 @@ public class Principal extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        else if(id ==R.id.cerrarsesion) {
+            Intent actividad = new Intent(this, LoginActivity.class);
+            startActivity(actividad);
             return true;
         }
 

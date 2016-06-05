@@ -3,8 +3,10 @@ package com.andret199377hotmail.learning.com.tucitaapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -70,6 +72,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mDocumentoView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private SQLiteDatabase db;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -88,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTipoDocumentoView.setAdapter(adapter);
-
 
 
         mDocumentoView = (EditText) findViewById(R.id.documento);
@@ -136,8 +139,6 @@ public class LoginActivity extends AppCompatActivity {
         View focusView = null;
 
 
-
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(Documento)) {
             mDocumentoView.setError(getString(R.string.error_field_required));
@@ -157,11 +158,10 @@ public class LoginActivity extends AppCompatActivity {
                 ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
                 //Toast.makeText(LoginActivity.this, "tipodocumento="+tipoDocumento+"&documento=" + Documento, Toast.LENGTH_LONG).show();
-                if (networkInfo != null && networkInfo.isConnected()){
+                if (networkInfo != null && networkInfo.isConnected()) {
                     AsyncTask tarea = new UserLoginTask().execute(tipoDocumento, Documento, login);
 
-                }
-                else {
+                } else {
                     Toast.makeText(this, "Error de conexión", Toast.LENGTH_LONG).show();
                 }
 
@@ -171,7 +171,6 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }
-
 
 
     /**
@@ -330,20 +329,19 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     reader.endObject();
                     reader.close();
-                    response =  new Login(tipo,documento,nombre1,nombre2,apellido1, apellido2);
-
+                    response = new Login(tipo, documento, nombre1, nombre2, apellido1, apellido2);
 
 
                 } else {
-                    Log.i("error",String.valueOf(statusCode));
+                    Log.i("error", String.valueOf(statusCode));
                     response = null;
 
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 response = null;
-            } finally{
-                if (conn!=null) conn.disconnect();
+            } finally {
+                if (conn != null) conn.disconnect();
             }
             return response;
         }
@@ -353,13 +351,28 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             showProgress(false);
 
-            if (success!=null) {
+            if (success != null) {
                 //Toast.makeText(LoginActivity.this,success.TIPDOCUM.concat(success.NUMDOCUM).concat(success.APELLIDO1).concat(success.NOMBRE1),Toast.LENGTH_LONG).show();
+                LoginSQLiteHelper usdbh = new LoginSQLiteHelper(LoginActivity.this);
 
+                db = usdbh.getWritableDatabase();
+
+                ContentValues nuevoRegistro = new ContentValues();
+                nuevoRegistro.put(FeedReaderContract.FeedEntry._ID, success.gettipo() + success.getNum());
+                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TIPO, success.gettipo());
+                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_DOCUMENTO, success.getNum());
+                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERNOMBRE, success.getNombre1());
+                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDONOMBRE, success.getNombre2());
+                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERAPELLIDO, success.getApellido1());
+                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDOAPELLIDO, success.getApellido2());
+                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN, 1);
+                long newRowid;
+                newRowid = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, nuevoRegistro);
+                Log.i("Hola", String.valueOf(newRowid));
                 registrar();
                 finish();
             } else {
-               Toast.makeText(LoginActivity.this, "Usuario no encontrado o puede haberse perdido conexion con el servidor", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Usuario no encontrado o puede haberse perdido conexion con el servidor", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -374,5 +387,23 @@ public class LoginActivity extends AppCompatActivity {
         Intent actividad = new Intent(this, Principal.class);
         startActivity(actividad);
     }
+    /*
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+*/
 }
+
 
