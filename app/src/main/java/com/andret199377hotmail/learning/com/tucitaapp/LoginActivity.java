@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    private SQLiteDatabase db;
+    SQLiteDatabase db;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -356,7 +356,6 @@ public class LoginActivity extends AppCompatActivity {
                 LoginSQLiteHelper usdbh = new LoginSQLiteHelper(LoginActivity.this);
 
                 db = usdbh.getWritableDatabase();
-
                 ContentValues nuevoRegistro = new ContentValues();
                 nuevoRegistro.put(FeedReaderContract.FeedEntry._ID, success.gettipo() + success.getNum());
                 nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TIPO, success.gettipo());

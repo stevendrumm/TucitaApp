@@ -1,9 +1,14 @@
 package com.andret199377hotmail.learning.com.tucitaapp;
 
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,9 +18,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class Principal extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+public class Principal extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private SQLiteDatabase db;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +57,9 @@ public class Principal extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -68,13 +87,39 @@ public class Principal extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if(id ==R.id.cerrarsesion) {
-            Intent actividad = new Intent(this, LoginActivity.class);
-            startActivity(actividad);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+
+                //return true;
+                break;
+            case R.id.cerrarsesion:
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+                dialogo1.setTitle(R.string.Important);
+                dialogo1.setMessage(R.string.ExitMessage);
+                dialogo1.setCancelable(true);
+                dialogo1.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        aceptar();
+                        Intent actividad = new Intent(Principal.this, LoginActivity.class);
+                        startActivity(actividad);
+                    }
+                });
+                dialogo1.show();
+                break;
+            case R.id.salir:
+                AlertDialog.Builder dialogo2 = new AlertDialog.Builder(this);
+                dialogo2.setTitle(R.string.Important);
+                dialogo2.setMessage(R.string.CloseMessage);
+                dialogo2.setCancelable(true);
+                dialogo2.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialogo2, int id){
+                        finish();
+                    }
+
+                });
+                break;
+
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -99,5 +144,59 @@ public class Principal extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void aceptar() {
+        LoginSQLiteHelper Ldbh = new LoginSQLiteHelper(this);
+        db = Ldbh.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN, 0);
+        String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN + " LIKE ?";
+        String[] selectionArgs = {String.valueOf(1)};
+        db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, selectionArgs);
+        Toast t = Toast.makeText(this, R.string.MessageExitProgram, Toast.LENGTH_SHORT);
+        t.show();
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Principal Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.andret199377hotmail.learning.com.tucitaapp/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Principal Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.andret199377hotmail.learning.com.tucitaapp/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

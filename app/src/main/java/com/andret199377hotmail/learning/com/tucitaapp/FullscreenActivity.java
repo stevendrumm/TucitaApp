@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -21,6 +23,7 @@ import android.view.View;
 public class FullscreenActivity extends AppCompatActivity {
     SQLiteDatabase db;
     private View mProgressView;
+    TextView principal;
     public static int MILISEGUNDOS_ESPERA = 2000;
 
 
@@ -30,10 +33,12 @@ public class FullscreenActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_fullscreen);
         mProgressView = findViewById(R.id.login_progress);
+        principal = (TextView) findViewById(R.id.fullscreen_content);
+        String font_path = "fonts/UbuntuMono-BI.ttf";
+        Typeface font = Typeface.createFromAsset(getAssets(),font_path);
+        principal.setTypeface(font);
         showProgress(true);
         esperarYCerrar(MILISEGUNDOS_ESPERA);
-
-
 
     }
     public void esperarYCerrar(int milisegundos) {
@@ -53,7 +58,6 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         }, milisegundos);
     }
-
     private boolean consultarusuario() {
         LoginSQLiteHelper usdbh = new LoginSQLiteHelper(this);
         db = usdbh.getWritableDatabase();
@@ -79,9 +83,6 @@ public class FullscreenActivity extends AppCompatActivity {
                     if(cod == 1){
                         logueado = true;
                     }
-
-
-
                 } while (c.moveToNext()&&!logueado);
 
             }
@@ -115,4 +116,55 @@ public class FullscreenActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+
+    }
+    /*
+    protected void onStart() {
+        super.onStart();
+        mProgressView = findViewById(R.id.login_progress);
+        showProgress(true);
+        esperarYCerrar(MILISEGUNDOS_ESPERA);
+
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mProgressView = findViewById(R.id.login_progress);
+        showProgress(true);
+        esperarYCerrar(MILISEGUNDOS_ESPERA);
+
+    }
+
+    @Override
+
+    protected void onResume() {
+        super.onResume();
+        finish();
+
+    }
+    */
+
+
+
 }
