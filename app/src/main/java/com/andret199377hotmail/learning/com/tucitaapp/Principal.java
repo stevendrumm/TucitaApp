@@ -1,14 +1,19 @@
 package com.andret199377hotmail.learning.com.tucitaapp;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -33,6 +39,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     private GoogleApiClient client;
 
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,14 +47,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,6 +57,27 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        TabHost tabs=(TabHost)findViewById(android.R.id.tabhost);
+        tabs.setup();
+
+        TabHost.TabSpec spec=tabs.newTabSpec("perfil");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_perm_identity_white_24dp));
+        tabs.addTab(spec);
+
+        spec=tabs.newTabSpec("cita");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_list_white_24dp));
+        tabs.addTab(spec);
+
+        spec=tabs.newTabSpec("configuracion");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_settings_white_24dp));
+        tabs.addTab(spec);
+
+        tabs.setCurrentTab(0);
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -90,33 +111,51 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         switch (item.getItemId()) {
             case R.id.action_settings:
 
-                //return true;
+                Intent actividad = new Intent(Principal.this,SettingsActivity.class);
+                startActivity(actividad);
                 break;
             case R.id.cerrarsesion:
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
                 dialogo1.setTitle(R.string.Important);
-                dialogo1.setMessage(R.string.ExitMessage);
-                dialogo1.setCancelable(true);
+                dialogo1.setMessage(R.string.CloseMessage);
+                dialogo1.setCancelable(false);
                 dialogo1.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogo1, int id) {
-                        aceptar();
+                        cerrarSesion();
+                        Toast t = Toast.makeText(Principal.this, R.string.MessageExitProgram, Toast.LENGTH_SHORT);
+                        t.show();
                         Intent actividad = new Intent(Principal.this, LoginActivity.class);
                         startActivity(actividad);
                     }
+                });
+                dialogo1.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialogo1,int id){
+
+
+                    }
+
                 });
                 dialogo1.show();
                 break;
             case R.id.salir:
                 AlertDialog.Builder dialogo2 = new AlertDialog.Builder(this);
                 dialogo2.setTitle(R.string.Important);
-                dialogo2.setMessage(R.string.CloseMessage);
-                dialogo2.setCancelable(true);
+                dialogo2.setMessage(R.string.ExitMessage);
+                dialogo2.setCancelable(false);
                 dialogo2.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialogo2, int id){
                         finish();
                     }
 
                 });
+                dialogo2.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialogo1,int id){
+
+
+                    }
+
+                });
+                dialogo2.show();
                 break;
 
 
@@ -146,7 +185,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         return true;
     }
 
-    public void aceptar() {
+    public void cerrarSesion() {
         LoginSQLiteHelper Ldbh = new LoginSQLiteHelper(this);
         db = Ldbh.getWritableDatabase();
         ContentValues valores = new ContentValues();
@@ -154,9 +193,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN + " LIKE ?";
         String[] selectionArgs = {String.valueOf(1)};
         db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, selectionArgs);
-        Toast t = Toast.makeText(this, R.string.MessageExitProgram, Toast.LENGTH_SHORT);
-        t.show();
-
     }
 
 

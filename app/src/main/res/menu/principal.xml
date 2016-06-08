@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="25"
         android:title="@string/action_settings"
         app:showAsAction="never" />
 
     <item android:id="@+id/Preferencias" android:title="@string/Preferences"
         android:orderInCategory="50"/>
     <item android:id="@+id/cerrarsesion" android:title="@string/close"
-        android:orderInCategory="25"/>
+        android:orderInCategory="75"/>
     <item android:id="@+id/salir" android:title="@string/exit"
-        android:orderInCategory="25"/>
+        android:orderInCategory="100"/>
 </menu>

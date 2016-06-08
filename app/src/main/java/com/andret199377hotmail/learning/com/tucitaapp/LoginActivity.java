@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -72,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mDocumentoView;
     private View mProgressView;
     private View mLoginFormView;
+
 
     SQLiteDatabase db;
     /**
@@ -350,29 +352,39 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Login success) {
             mAuthTask = null;
             showProgress(false);
+            LoginSQLiteHelper usdbh = new LoginSQLiteHelper(LoginActivity.this);
+            db = usdbh.getWritableDatabase();
 
             if (success != null) {
                 //Toast.makeText(LoginActivity.this,success.TIPDOCUM.concat(success.NUMDOCUM).concat(success.APELLIDO1).concat(success.NOMBRE1),Toast.LENGTH_LONG).show();
-                LoginSQLiteHelper usdbh = new LoginSQLiteHelper(LoginActivity.this);
 
-                db = usdbh.getWritableDatabase();
-                ContentValues nuevoRegistro = new ContentValues();
-                nuevoRegistro.put(FeedReaderContract.FeedEntry._ID, success.gettipo() + success.getNum());
-                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TIPO, success.gettipo());
-                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_DOCUMENTO, success.getNum());
-                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERNOMBRE, success.getNombre1());
-                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDONOMBRE, success.getNombre2());
-                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERAPELLIDO, success.getApellido1());
-                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDOAPELLIDO, success.getApellido2());
-                nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN, 1);
-                long newRowid;
-                newRowid = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, nuevoRegistro);
-                Log.i("Hola", String.valueOf(newRowid));
+                Cursor c = db.rawQuery("select * from " + FeedReaderContract.FeedEntry.TABLE_NAME + " where " + FeedReaderContract.FeedEntry._ID + " = '" + success.gettipo() + success.getNum() + "'", null);
+                if (c.moveToFirst()) {
+                    ContentValues valores = new ContentValues();
+                    valores.put(FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN, 1);
+                    String selection = FeedReaderContract.FeedEntry._ID + " LIKE ?";
+                    String[] selectionArgs = {c.getString(0)};
+                    db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, selectionArgs);
+
+                } else {
+
+                    ContentValues nuevoRegistro = new ContentValues();
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry._ID, success.gettipo() + success.getNum());
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TIPO, success.gettipo());
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_DOCUMENTO, success.getNum());
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERNOMBRE, success.getNombre1());
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDONOMBRE, success.getNombre2());
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERAPELLIDO, success.getApellido1());
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDOAPELLIDO, success.getApellido2());
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN, 1);
+                    //long newRowid;
+                    db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, nuevoRegistro);
+                    //Log.i("Hola", String.valueOf(newRowid));
+
+                }
                 registrar();
-                finish();
-            } else {
-                Toast.makeText(LoginActivity.this, "Usuario no encontrado o puede haberse perdido conexion con el servidor", Toast.LENGTH_LONG).show();
-            }
+
+            }else{ Toast.makeText(LoginActivity.this,"Usuario no encontrado",Toast.LENGTH_LONG).show();}
         }
 
         @Override

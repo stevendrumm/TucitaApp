@@ -46,7 +46,7 @@ public class FullscreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // acciones que se ejecutan tras los milisegundos
-                if (consultarusuario()) {
+                if (!consultarusuario()) {
                     showProgress(false);
                     Intent actividad = new Intent(FullscreenActivity.this, Principal.class);
                     startActivity(actividad);
@@ -61,7 +61,6 @@ public class FullscreenActivity extends AppCompatActivity {
     private boolean consultarusuario() {
         LoginSQLiteHelper usdbh = new LoginSQLiteHelper(this);
         db = usdbh.getWritableDatabase();
-
         boolean logueado = false;
         String[] projection = {
                 FeedReaderContract.FeedEntry._ID,
@@ -69,28 +68,21 @@ public class FullscreenActivity extends AppCompatActivity {
 
         };
         // How you want the results sorted in the resulting Cursor
-        String sortOrder =
-                FeedReaderContract.FeedEntry._ID + " DESC";
+        String sortOrder =  FeedReaderContract.FeedEntry._ID + " DESC";
 
         Cursor c = db.query(FeedReaderContract.FeedEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
-
         //Recorremos los resultados para mostrarlos en pantalla
-        if(c!=null){
-            if (c.moveToFirst()) {
-                //Recorremos el cursor hasta que no haya m�s registros
-                do {
-                    int cod = c.getInt(1);
-                    if(cod == 1){
-                        logueado = true;
-                    }
-                } while (c.moveToNext()&&!logueado);
-
-            }
-
+        if (c.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya m�s registros
+            do {
+                int cod = c.getInt(1);
+                if(cod == 1){
+                    logueado = true;
+                }
+            } while (c.moveToNext()&&!logueado);
 
         }
         return logueado;
-
     }
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

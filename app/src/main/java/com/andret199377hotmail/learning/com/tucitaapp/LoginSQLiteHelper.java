@@ -5,8 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class LoginSQLiteHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 4;
-    public static final String DATABASE_NAME = "Logueo.db";
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "loguear.db";
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
