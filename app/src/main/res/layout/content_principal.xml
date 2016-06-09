@@ -33,19 +33,21 @@
                 <LinearLayout android:id="@+id/tab1"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
 
-                    <TextView android:id="@+id/textView1"
-                        android:text="Contenido Tab 1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                    <fragment android:name="com.andret199377hotmail.learning.com.tucitaapp.ArticleFragment"
+                        android:id="@+id/list"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/tab2"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView android:id="@+id/textView2"
                         android:text="Contenido Tab 2"
@@ -56,7 +58,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView android:id="@+id/textView3"
                         android:text="Contenido Tab 3"
