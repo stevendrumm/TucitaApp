@@ -1,39 +1,61 @@
 package com.andret199377hotmail.learning.com.tucitaapp;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.Toast;
+import android.support.v4.app.FragmentActivity;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import static com.andret199377hotmail.learning.com.tucitaapp.HeadlinesFragment.NOMBREFECHA;
+
 public class Principal extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         HeadlinesFragment.OnHeadlineSelectedListener {
+
     private SQLiteDatabase db;
+    DatePicker fecha;
+    Spinner centroproduccion;
+    private View mProgressView;
+    private View mCitaFormView;
+    ToggleButton buscar;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -48,6 +70,18 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         setContentView(R.layout.activity_principal);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        fecha = (DatePicker) findViewById(R.id.datePickerFechaCita);
+        centroproduccion = (Spinner) findViewById(R.id.spinnerCentroProduccion);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDeCita,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        centroproduccion.setAdapter(adapter);
+
+        buscar = (ToggleButton) findViewById(R.id.toggleButtonBuscar);
+        mProgressView = findViewById(R.id.citas_progress);
+        mCitaFormView = findViewById(R.id.citas_form);
+
+
 
 
 
@@ -62,29 +96,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
         TabHost tabs=(TabHost)findViewById(android.R.id.tabhost);
         tabs.setup();
-
-        if (findViewById(R.id.fragment_container) != null) {
-
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-            if (savedInstanceState != null) {
-                return;
-            }
-
-            // Create an instance of ExampleFragment
-            HeadlinesFragment firstFragment = new HeadlinesFragment();
-
-            // In case this activity was started with special instructions from an Intent,
-            // pass the Intent's extras to the fragment as arguments
-            firstFragment.setArguments(getIntent().getExtras());
-
-            // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
-        }
-
-
 
         TabHost.TabSpec spec=tabs.newTabSpec("perfil");
         spec.setContent(R.id.tab1);
@@ -104,6 +115,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
         tabs.setCurrentTab(0);
 
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -119,6 +131,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -131,7 +144,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
@@ -170,7 +182,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 dialogo2.setCancelable(false);
                 dialogo2.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialogo2, int id){
-                        finish();
+                        System.exit(0);
                     }
 
                 });
@@ -216,9 +228,9 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         db = Ldbh.getWritableDatabase();
         ContentValues valores = new ContentValues();
         valores.put(FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN, 0);
-        String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN + " LIKE ?";
-        String[] selectionArgs = {String.valueOf(1)};
-        db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, selectionArgs);
+        String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN + " = 1";
+        //String[] selectionArgs = {1};
+        db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, null);
     }
 
     @Override
@@ -287,12 +299,94 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
             // Replace whatever is in the fragment_container view with this fragment,
             // and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.replace(R.id.firts_fragment_container, newFragment);
             transaction.addToBackStack(null);
 
             // Commit the transaction
             transaction.commit();
         }
+    }
+
+    private void cargarHorasCitas() {
+        if (findViewById(R.id.firts_fragment_container) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+                HeadlinesFragment firstFragment = new HeadlinesFragment();
+                Bundle args = new Bundle();
+                args.putString(HeadlinesFragment.NOMBREFECHA, convertir(fecha.getYear())+"-"+convertir(fecha.getMonth()+1)+"-"+convertir(fecha.getDayOfMonth()));
+                Log.i("fecha", convertir(fecha.getYear())+"-"+convertir(fecha.getMonth()+1)+"-"+convertir(fecha.getDayOfMonth()));
+                switch (centroproduccion.getSelectedItemPosition()) {
+                    case 0:
+                        args.putString(HeadlinesFragment.CENTROPRODUCCION, "1110");
+                        Log.i("error", "1110");
+                        break;
+                    case 1:
+                        args.putString(HeadlinesFragment.CENTROPRODUCCION, "1301");
+                        Log.i("error", "1301");
+                        break;
+                }
+
+
+                firstFragment.setArguments(args);
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.firts_fragment_container, firstFragment).commit();
+
+        }
+
+    }
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mCitaFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mCitaFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mCitaFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mCitaFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    public void mostrar(View v){
+        if(buscar.isChecked()){
+
+            cargarHorasCitas();
+        }else{
+
+        }
+
+    }
+    public String convertir(int i) {
+        String cadena = null;
+        if (i < 10) {
+            cadena = "0".concat(String.valueOf(i));
+        }else{
+            cadena = String.valueOf(i);
+        }
+        return cadena;
     }
 
 }

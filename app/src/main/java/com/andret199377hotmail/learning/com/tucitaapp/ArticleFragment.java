@@ -61,7 +61,7 @@ public class ArticleFragment extends Fragment {
 
     public void updateArticleView(int position) {
         TextView article = (TextView) getActivity().findViewById(R.id.article);
-        article.setText(cita.Articles[position]);
+        article.setText("HOLA");
         mCurrentPosition = position;
     }
 
