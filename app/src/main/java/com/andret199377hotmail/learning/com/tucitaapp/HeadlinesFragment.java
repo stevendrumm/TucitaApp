@@ -48,7 +48,6 @@ public class HeadlinesFragment extends ListFragment {
     OnHeadlineSelectedListener mCallback;
     final static String NOMBREFECHA = "FECHA";
     final static String CENTROPRODUCCION = "CENTROPRODUCCION";
-    List<String> fechas = null;
     List<Cita> citas = new ArrayList<Cita>();
     String fecha;
     String centroproduccion;
@@ -56,17 +55,13 @@ public class HeadlinesFragment extends ListFragment {
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnHeadlineSelectedListener {
         /** Called by HeadlinesFragment when a list item is selected */
-        void onArticleSelected(int position);
+        void onArticleSelected(int position, String itemAtPosition);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // We need to use a different list item layout for devices older than Honeycomb
-
-
-        // Create an array adapter for the list view, using the Ipsum headlines array
         if (savedInstanceState == null) {
             Bundle extras = getArguments();
             if (extras == null) {
@@ -88,11 +83,7 @@ public class HeadlinesFragment extends ListFragment {
     public void onStart() {
         super.onStart();
 
-        // When in two-pane layout, set the listview to highlight the selected list item
-        // (We do this during onStart because at the point the listview is available.)
-        if (getFragmentManager().findFragmentById(R.id.article_fragment) != null) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        }
+
     }
 
     @Override
@@ -112,13 +103,11 @@ public class HeadlinesFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Notify the parent activity of selected item
-        mCallback.onArticleSelected(position);
-        Toast.makeText(this.getActivity(),String.valueOf(citas.get(position).getFecha()), Toast.LENGTH_SHORT).show();
-        // Set the item as checked to be highlighted when in two-pane layout
+
+        mCallback.onArticleSelected(position, l.getItemAtPosition(position).toString());
+
+
         getListView().setItemChecked(position, true);
-
-
-
 
     }
 

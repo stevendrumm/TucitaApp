@@ -35,6 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible">
+                    <include layout="@layout/tab_perfil"/>
 
 
                 </LinearLayout>
@@ -44,59 +45,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible">
-
-                    <ProgressBar
-                        android:id="@+id/citas_progress"
-                        style="?android:attr/progressBarStyleLarge"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:visibility="gone" />
-
-
-
-                    <ScrollView
-                        android:id="@+id/citas_form"
-                        android:layout_width="match_parent"
-                        android:layout_height="350dp"
-                        android:padding="10dp"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:id="@+id/cita_form"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingTop="30dp">
-                            <Spinner
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:id="@+id/spinnerCentroProduccion" />
-
-                            <DatePicker
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/datePickerFechaCita"
-                                android:nestedScrollingEnabled="false"
-                                android:calendarViewShown="false"
-                                android:minDate="2016/01/01"
-                                android:maxDate="2016/12/31" />
-
-
-                        </LinearLayout>
-                    </ScrollView>
-                    <ToggleButton
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="Buscar"
-                        android:id="@+id/toggleButtonBuscar"
-                        android:onClick="mostrar"
-                        android:textOn="Buscando tucita"
-                        android:textOff="Buscar" />
-                    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:id="@+id/firts_fragment_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Reserva de citas medicas"
+                        android:id="@+id/textView2"
+                        android:layout_margin="2dp" />
+                    <include layout="@layout/tab_cita"/>
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/tab3"
@@ -108,8 +64,6 @@
                         android:id="@+id/second_fragment_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
-
-
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
