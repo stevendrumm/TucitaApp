@@ -31,8 +31,16 @@
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/imageView3"
+                    android:id="@+id/imagendeperfil"
                     android:layout_weight="2" />
+                <ImageButton
+                    android:id="@+id/btnIntend"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_a_photo_black_48dp"
+                    android:nestedScrollingEnabled="true"
+                    android:onClick="tomarFoto" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"

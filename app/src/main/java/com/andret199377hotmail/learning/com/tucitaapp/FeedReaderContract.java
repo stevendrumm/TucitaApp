@@ -20,6 +20,7 @@ public final class FeedReaderContract {
         public static final String COLUMN_NAME_PRIMERAPELLIDO = "primerapellido";
         public static final String COLUMN_NAME_SEGUNDOAPELLIDO = "segundoapellido";
         public static final String COLUMN_NAME_STATE_LOGIN = "estadologin";
+        public static final String COLUMN_NAME_PHOTO_ROUTE = "rutafoto";
         public static final String COLUMN_NAME_NUNNABLE = null;
 
     }

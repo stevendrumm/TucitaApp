@@ -377,6 +377,7 @@ public class LoginActivity extends AppCompatActivity {
                     nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERAPELLIDO, success.getApellido1());
                     nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDOAPELLIDO, success.getApellido2());
                     nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN, 1);
+                    nuevoRegistro.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PHOTO_ROUTE, "");
                     //long newRowid;
                     db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, nuevoRegistro);
                     //Log.i("Hola", String.valueOf(newRowid));
@@ -398,23 +399,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent actividad = new Intent(this, Principal.class);
         startActivity(actividad);
     }
-    /*
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-*/
 }
 
 
