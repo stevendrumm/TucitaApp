@@ -63,17 +63,10 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
     private static final int ACTION_TAKE_PHOTO_B = 1;
     private static final int ACTION_TAKE_PHOTO_S = 2;
-
-
     private static final String BITMAP_STORAGE_KEY = "viewbitmap";
     private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
-
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
-
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
     private ImageView mImageView;
@@ -86,6 +79,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     ToggleButton buscar;
     HeadlinesFragment firstFragment;
     ImageButton picbtn;
+    TextView documento;
+    TextView tipo;
     TextView nombre1;
     TextView nombre2;
     TextView apellido1;
@@ -114,6 +109,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
         buscar = (ToggleButton) findViewById(R.id.toggleButtonBuscar);
         mCitaFormView = findViewById(R.id.cita_form);
+        documento = (TextView) findViewById(R.id.documento);
+        tipo = (TextView) findViewById(R.id.tipo);
         nombre1 = (TextView) findViewById(R.id.Nombre1);
         nombre2 = (TextView) findViewById(R.id.Nombre2);
         apellido1 = (TextView) findViewById(R.id.Apellido1);
@@ -308,7 +305,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     public void onArticleSelected(int position, final String itemAtPosition) {
         AlertDialog.Builder dialogo3 = new AlertDialog.Builder(this);
         dialogo3.setTitle(R.string.Important);
-        dialogo3.setMessage(R.string.CitaMessage+" "+itemAtPosition+"?");
+        String mensaje = getString(R.string.CitaMessage);
+        dialogo3.setMessage(mensaje+" "+itemAtPosition+"?" );//
         dialogo3.setCancelable(false);
         dialogo3.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialogo2, int id){
@@ -384,6 +382,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         db = Ldbh.getWritableDatabase();
 
         String[] campos = new String[] {
+                FeedReaderContract.FeedEntry.COLUMN_NAME_DOCUMENTO,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_TIPO,
                 FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERNOMBRE,
                 FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDONOMBRE,
                 FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERAPELLIDO,
@@ -397,13 +397,29 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
         if (c.moveToFirst()) {
             do {
-
-                nombre1.setText(c.getString(0));
-                nombre2.setText(c.getString(1));
-                apellido1.setText(c.getString(2));
-                apellido2.setText(c.getString(3));
-                mImageBitmap = BitmapFactory.decodeFile(c.getString(4));
-                Log.i("ruta", c.getString(4));
+                documento.setText(c.getString(0));
+                switch (c.getString(1)){
+                    case "1":
+                        tipo.setText("Cedula de ciudadania");
+                        break;
+                    case "2":
+                        tipo.setText("Tarjeta de identidad");
+                        break;
+                    case "3":
+                        tipo.setText("Cedula de extranjeria");
+                        break;
+                    case "4":
+                        tipo.setText("registro civil");
+                        break;
+                    default:
+                        break;
+                }
+                nombre1.setText(c.getString(2));
+                nombre2.setText(c.getString(3));
+                apellido1.setText(c.getString(4));
+                apellido2.setText(c.getString(5));
+                mImageBitmap = BitmapFactory.decodeFile(c.getString(6));
+                Log.i("ruta", c.getString(6));
 
 		/* Associate the Bitmap to the ImageView */
                 mImageView.setImageBitmap(mImageBitmap);
@@ -635,8 +651,5 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         );
 
     }
-
-
-
 
 }

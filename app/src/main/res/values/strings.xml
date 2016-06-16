@@ -41,7 +41,8 @@
     <string name="close">Cerrar sesion</string>
     <string name="Welcome">Bienvenido</string>
     <string name="CitaMessage">¿Desea reservar una cita para el dia:</string>
-    <string name="cannot">No se pudo guardar la foto</string>
+
+    <string name="prompt_tipo">Tipo</string>
 
 
     <string-array name="TipoDocumento">
