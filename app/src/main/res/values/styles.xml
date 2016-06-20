@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/blue</item>
-        <item name="colorPrimaryDark">@color/darkblue</item>
-        <item name="colorAccent">@color/green</item>
+        <item name="colorPrimary">@color/azulcompleto</item>
+        <item name="colorPrimaryDark">@color/azuloscurocompleto</item>
+        <item name="colorAccent">@color/verdecompleto</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -19,10 +19,10 @@
 
 
     <style name="FullscreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/blue</item>
-        <item name="colorPrimary">@color/blue</item>
-        <item name="colorPrimaryDark">@color/darkblue</item>
-        <item name="colorAccent">@color/green</item>
+
+        <item name="colorPrimary">@color/azulcompleto</item>
+        <item name="colorPrimaryDark">@color/azuloscurocompleto</item>
+        <item name="colorAccent">@color/verdecompleto</item>
     </style>
 
 </resources>

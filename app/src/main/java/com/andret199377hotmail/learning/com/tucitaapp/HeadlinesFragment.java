@@ -279,4 +279,6 @@ public class HeadlinesFragment extends ListFragment {
         return doubles;
     }
 
+
+
 }

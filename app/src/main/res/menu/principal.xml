@@ -4,16 +4,16 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="25"
-        android:title="@string/action_settings"
+        android:title="@string/menu_settings"
         android:icon="@drawable/ic_settings_black_48dp"
         app:showAsAction="never" />
 
     <item android:id="@+id/Preferencias" android:title="@string/Preferences"
         android:orderInCategory="50"/>
-    <item android:id="@+id/cerrarsesion" android:title="@string/close"
+    <item android:id="@+id/cerrarsesion" android:title="@string/menu_close"
 
         android:orderInCategory="75"/>
-    <item android:id="@+id/salir" android:title="@string/exit"
+    <item android:id="@+id/salir" android:title="@string/menu_exit"
         android:icon="@drawable/ic_exit_to_app_black_48dp"
         android:orderInCategory="100"/>
 </menu>

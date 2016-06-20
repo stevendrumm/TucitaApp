@@ -1,7 +1,6 @@
 <resources>
     <string name="album_name">CameraSample</string>
     <string name="app_name">TucitaApp</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_principal">Tucita</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,25 +11,42 @@
     <!-- Strings related to login -->
     <string name="prompt_spinner">Selecccione tipo de documento</string>
     <string name="prompt_documento">Documento</string>
-    <string name="prompt_nombre1">Primer nombre</string>
-    <string name="prompt_nombre2">Segundo nombre</string>
-    <string name="prompt_apellido1">Primer apellido</string>
-    <string name="prompt_apellido2">Segundo apellido</string>
-    <string name="action_sign_in">Registrar</string>
+    <string-array name="TipoDocumento">
+        <item>Cedula de ciudadania</item>
+        <item>Tarjeta de identidad</item>
+        <item>Cedula de extranjeria</item>
+        <item>Registro civil</item>
+        <item>Pasaporte</item>
+    </string-array>
+    <string name="action_sign_in">Ingresar </string>
     <string name="action_sign_in_short">Registro</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">Este campo es requerido</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings relacionados con perfil -->
+    <string name="prompt_nombre1">Primer nombre</string>
+    <string name="prompt_nombre2">Segundo nombre</string>
+    <string name="prompt_apellido1">Primer apellido</string>
+    <string name="prompt_apellido2">Segundo apellido</string>
+    <string name="prompt_tipo">Tipo de documento</string>
+    <string name="lista_cedula">Cedula de ciudadania</string>
+    <string name="lista_tarjeta">Tarjeta de identidad</string>
+    <string name="lista_extranjeria">Cedula de extranjeria</string>
+    <string name="lista_civil">Registro civil</string>
+    <string name="lista_pasaporte">Pasaporte</string>
+
+    <!-- Strings relacionados con menu -->
+    <string name="menu_settings">Configuracion</string>
+    <string name="menu_about">Acerca de</string>
+    <string name="menu_close">Cerrar sesion</string>
+    <string name="menu_exit">Salir</string>
+
+    <!-- Strings relacionados con reserva de cita -->
     <string name="edit_message">Introducir un mensaje</string>
     <string name="button_send">Enviar</string>
-    <string name="action_settings">Configuracion</string>
     <string name="title_activity_display_message">Mi mensaje</string>
-    <string name="about">Acerca de</string>
-    <string name="exit">Salir</string>
     <string name="Confirmation">Confirmacion</string>
     <string name="Important">Importante</string>
     <string name="Confirm">Confirmar</string>
@@ -38,20 +54,15 @@
     <string name="CloseMessage">¿Desea cerrar la sesion?</string>
     <string name="Cancel">Cancelar</string>
     <string name="MessageExitProgram">Sesion cerrada</string>
-    <string name="close">Cerrar sesion</string>
     <string name="Welcome">Bienvenido</string>
     <string name="CitaMessage">¿Desea reservar una cita para el dia:</string>
+    <string name="title_reserva_cita">Reserva de citas medicas</string>
+    <string name="button_reservar_cita_on">Buscando</string>
+    <string name="button_reservar_cita_off">Buscar</string>
 
-    <string name="prompt_tipo">Tipo</string>
 
 
-    <string-array name="TipoDocumento">
-        <item>Cedula de ciudadania</item>
-        <item>Tarjeta de indentidad</item>
-        <item>Cedula de extranjeria</item>
-        <item>Registro civil</item>
-        <item>Pasaporte</item>
-    </string-array>
+
     <string-array name="TipoDeCita">
         <item>Medico general</item>
         <item>Odontologia</item>

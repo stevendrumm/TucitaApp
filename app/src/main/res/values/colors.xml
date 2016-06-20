@@ -1,32 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="blue" type="color">#FF33B5E5</item>
-    <item name="purple" type="color">#FFAA66CC</item>
-    <item name="green" type="color">#FF99CC00</item>
-    <item name="orange" type="color">#FFFFBB33</item>
-    <item name="red" type="color">#FFFF4444</item>
-    <item name="darkblue" type="color">#FF0099CC</item>
-    <item name="darkpurple" type="color">#FF9933CC</item>
-    <item name="darkgreen" type="color">#FF669900</item>
-    <item name="darkorange" type="color">#FFFF8800</item>
-    <item name="darkred" type="color">#FFCC0000</item>
-    <item name="black" type="color">#000000</item>
-    <item name="white" type="color">#FFFFFF</item>
 
-    <integer-array name="androidcolors">
-        <item>@color/blue</item>
-        <item>@color/purple</item>
-        <item>@color/green</item>
-        <item>@color/orange</item>
-        <item>@color/red</item>
-        <item>@color/darkblue</item>
-        <item>@color/darkpurple</item>
-        <item>@color/darkgreen</item>
-        <item>@color/darkorange</item>
-        <item>@color/darkred</item>
-        <item>@color/black</item>
-        <item>@color/white</item>
-    </integer-array>
+    <item name="azultransparencia60" type="color">#6633B5E5</item>
+    <item name="azultransparencia50" type="color">#8033B5E5</item>
+    <item name="azultransparencia40" type="color">#9933B5E5</item>
+    <item name="azultransparencia30" type="color">#B333B5E5</item>
+    <item name="azultransparencia20" type="color">#CC33B5E5</item>
+    <item name="azultransparencia10" type="color">#E633B5E5</item>
+    <item name="azulcompleto" type="color">#FF33B5E5</item>
+
+    <item name="moradotransparencia60" type="color">#66AA66CC</item>
+    <item name="moradotransparencia50" type="color">#80AA66CC</item>
+    <item name="moradotransparencia40" type="color">#99AA66CC</item>
+    <item name="moradotransparencia30" type="color">#B3AA66CC</item>
+    <item name="moradotransparencia20" type="color">#CCAA66CC</item>
+    <item name="moradotransparencia10" type="color">#E6AA66CC</item>
+    <item name="moradocompleto" type="color">#FFAA66CC</item>
+
+    <item name="azuloscurotransparencia60" type="color">#660000FF</item>
+    <item name="azuloscurotransparencia50" type="color">#800000FF</item>
+    <item name="azuloscurotransparencia40" type="color">#990000FF</item>
+    <item name="azuloscurotransparencia30" type="color">#B30099CC</item>
+    <item name="azuloscurotransparencia20" type="color">#CC0099CC</item>
+    <item name="azuloscurotransparencia10" type="color">#E60099CC</item>
+    <item name="azuloscurocompleto" type="color">#FF0099CC</item>
+
+    <item name="verdetransparencia60" type="color">#6699CC00</item>
+    <item name="verdetransparencia50" type="color">#8099CC00</item>
+    <item name="verdetransparencia40" type="color">#9999CC00</item>
+    <item name="verdetransparencia30" type="color">#B399CC00</item>
+    <item name="verdetransparencia20" type="color">#CC99CC00</item>
+    <item name="verdetransparencia10" type="color">#E699CC00</item>
+    <item name="verdecompleto" type="color">#FF99CC00</item>
+
+    <item name="verdeclarotransparencia60" type="color">#6600FF00</item>
+    <item name="verdeclarotransparencia50" type="color">#8000FF00</item>
+    <item name="verdeclarotransparencia40" type="color">#9900FF00</item>
+    <item name="verdeclarotransparencia30" type="color">#B300FF00</item>
+    <item name="verdeclarotransparencia20" type="color">#CC00FF00</item>
+    <item name="verdeclarotransparencia10" type="color">#E600FF00</item>
+    <item name="verdeclarocompleto" type="color">#FF00FF00</item>
+
+    <item name="naranjatransparencia60" type="color">#66FFBB33</item>
+    <item name="naranjatransparencia50" type="color">#80FFBB33</item>
+    <item name="naranjatransparencia40" type="color">#99FFBB33</item>
+    <item name="naranjatransparencia30" type="color">#B3FFBB33</item>
+    <item name="naranjatransparencia20" type="color">#CCFFBB33</item>
+    <item name="naranjatransparencia10" type="color">#E6FFBB33</item>
+    <item name="naranjacompleto" type="color">#FFFFBB33</item>
+
+    <item name="negrotransparencia60" type="color">#66000000</item>
+    <item name="negrotransparencia50" type="color">#80000000</item>
+    <item name="negrotransparencia40" type="color">#99000000</item>
+    <item name="negrotransparencia30" type="color">#B3000000</item>
+    <item name="negrotransparencia20" type="color">#CC000000</item>
+    <item name="negrotransparencia10" type="color">#E6000000</item>
+    <item name="negrocompleto" type="color">#FF000000</item>
+
+    <item name="gristransparencia60" type="color">#66BBBBBB</item>
+    <item name="gristransparencia50" type="color">#80BBBBBB</item>
+    <item name="gristransparencia40" type="color">#99BBBBBB</item>
+    <item name="gristransparencia30" type="color">#B3BBBBBB</item>
+    <item name="gristransparencia20" type="color">#CCBBBBBB</item>
+    <item name="gristransparencia10" type="color">#E6BBBBBB</item>
+    <item name="griscompleto" type="color">#FFBBBBBB</item>
+
+    <item name="blanco" type="color">#FFFFFF</item>
 
     <color name="black_overlay">#66000000</color>
+
+
+
+    <integer-array name="androidcolors">
+        <item>@color/azultransparencia50</item>
+        <item>@color/azultransparencia60</item>
+        <item>@color/azultransparencia40</item>
+        <item>@color/azultransparencia30</item>
+        <item>@color/azultransparencia20</item>
+        <item>@color/azultransparencia10</item>
+        <item>@color/azulcompleto</item>
+        <item>@color/azuloscurotransparencia60</item>
+        <item>@color/azuloscurotransparencia50</item>
+        <item>@color/azuloscurotransparencia40</item>
+        <item>@color/azuloscurotransparencia30</item>
+        <item>@color/azuloscurotransparencia20</item>
+        <item>@color/azuloscurotransparencia10</item>
+        <item>@color/azuloscurocompleto</item>
+        <item>@color/moradotransparencia60</item>
+        <item>@color/moradotransparencia50</item>
+        <item>@color/moradotransparencia40</item>
+        <item>@color/moradotransparencia30</item>
+        <item>@color/moradotransparencia20</item>
+        <item>@color/moradotransparencia10</item>
+        <item>@color/moradocompleto</item>
+        <item>@color/verdeclarotransparencia60</item>
+        <item>@color/verdeclarotransparencia50</item>
+        <item>@color/verdeclarotransparencia40</item>
+        <item>@color/verdeclarotransparencia30</item>
+        <item>@color/verdeclarotransparencia20</item>
+        <item>@color/verdeclarotransparencia10</item>
+        <item>@color/verdeclarocompleto</item>
+        <item>@color/verdetransparencia60</item>
+        <item>@color/verdetransparencia50</item>
+        <item>@color/verdetransparencia40</item>
+        <item>@color/verdetransparencia30</item>
+        <item>@color/verdetransparencia20</item>
+        <item>@color/verdetransparencia10</item>
+        <item>@color/verdecompleto</item>
+        <item>@color/naranjatransparencia60</item>
+        <item>@color/naranjatransparencia50</item>
+        <item>@color/naranjatransparencia40</item>
+        <item>@color/naranjatransparencia30</item>
+        <item>@color/naranjatransparencia20</item>
+        <item>@color/naranjatransparencia10</item>
+        <item>@color/naranjacompleto</item>
+        <item>@color/negrotransparencia60</item>
+        <item>@color/negrotransparencia50</item>
+        <item>@color/negrotransparencia40</item>
+        <item>@color/negrotransparencia30</item>
+        <item>@color/negrotransparencia20</item>
+        <item>@color/negrotransparencia10</item>
+        <item>@color/negrocompleto</item>
+        <item>@color/gristransparencia60</item>
+        <item>@color/gristransparencia50</item>
+        <item>@color/gristransparencia40</item>
+        <item>@color/gristransparencia30</item>
+        <item>@color/gristransparencia20</item>
+        <item>@color/gristransparencia10</item>
+        <item>@color/griscompleto</item>
+        <item>@color/blanco</item>
+    </integer-array>
+
+
 </resources>

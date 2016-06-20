@@ -63,6 +63,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
     private static final int ACTION_TAKE_PHOTO_B = 1;
     private static final int ACTION_TAKE_PHOTO_S = 2;
+    private static final String CURRENT_TAB="tab";
     private static final String BITMAP_STORAGE_KEY = "viewbitmap";
     private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
     private static final String JPEG_FILE_PREFIX = "IMG_";
@@ -85,6 +86,9 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     TextView nombre2;
     TextView apellido1;
     TextView apellido2;
+    TabHost tabs;
+    Toolbar toolbar;
+    DrawerLayout drawer;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -98,15 +102,15 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fecha = (DatePicker) findViewById(R.id.datePickerFechaCita);
         centroproduccion = (Spinner) findViewById(R.id.spinnerCentroProduccion);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDeCita,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        centroproduccion.setAdapter(adapter);
-
+        poblarSpinner(centroproduccion);
+        tabs=(TabHost)findViewById(android.R.id.tabhost);
+        poblartab(tabs);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        configurarDrawerLayout(drawer);
         buscar = (ToggleButton) findViewById(R.id.toggleButtonBuscar);
         mCitaFormView = findViewById(R.id.cita_form);
         documento = (TextView) findViewById(R.id.documento);
@@ -120,35 +124,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         picbtn = (ImageButton) findViewById(R.id.btnIntend);
 
         perfilUsuario();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        TabHost tabs=(TabHost)findViewById(android.R.id.tabhost);
-        tabs.setup();
-
-        TabHost.TabSpec spec=tabs.newTabSpec("perfil");
-        spec.setContent(R.id.tab1);
-        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_perm_identity_white_24dp));
-        tabs.addTab(spec);
-
-
-        spec=tabs.newTabSpec("cita");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_list_white_24dp));
-        tabs.addTab(spec);
-
-        spec=tabs.newTabSpec("configuracion");
-        spec.setContent(R.id.tab3);
-        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_settings_white_24dp));
-        tabs.addTab(spec);
-
-        tabs.setCurrentTab(0);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
@@ -169,7 +145,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
             super.onBackPressed();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -251,6 +226,48 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void configurarDrawerLayout(DrawerLayout drawer){
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    public void poblarSpinner(Spinner centroproduccion){
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDeCita, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        centroproduccion.setAdapter(adapter);
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void poblartab(TabHost tabs){
+        tabs.setup();
+        TabHost.TabSpec spec= this.tabs.newTabSpec("perfil");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_perm_identity_white_24dp));
+        this.tabs.addTab(spec);
+
+
+        spec= this.tabs.newTabSpec("cita");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_list_white_24dp));
+        this.tabs.addTab(spec);
+
+        spec= this.tabs.newTabSpec("configuracion");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_settings_white_24dp));
+        this.tabs.addTab(spec);
+
+        this.tabs.setCurrentTab(0);
+
+    }
+
 
     public void cerrarSesion() {
         LoginSQLiteHelper Ldbh = new LoginSQLiteHelper(this);
@@ -400,17 +417,19 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 documento.setText(c.getString(0));
                 switch (c.getString(1)){
                     case "1":
-                        tipo.setText("Cedula de ciudadania");
+                        tipo.setText(R.string.lista_cedula);
                         break;
                     case "2":
-                        tipo.setText("Tarjeta de identidad");
+                        tipo.setText(R.string.lista_tarjeta);
                         break;
                     case "3":
-                        tipo.setText("Cedula de extranjeria");
+                        tipo.setText(R.string.lista_extranjeria);
                         break;
                     case "4":
-                        tipo.setText("registro civil");
+                        tipo.setText(R.string.lista_civil);
                         break;
+                    case "5":
+                        tipo.setText(R.string.lista_pasaporte);
                     default:
                         break;
                 }
@@ -457,7 +476,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
     }
 
-
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
@@ -471,7 +489,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     private String getAlbumName() {
         return getString(R.string.album_name);
     }
-
 
     private File getAlbumDir() {
         File storageDir = null;
@@ -633,8 +650,9 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
-
         outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
+        outState.putInt(CURRENT_TAB,tabs.getCurrentTab());
+
 
         super.onSaveInstanceState(outState);
     }
@@ -649,7 +667,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
                         ImageView.VISIBLE : ImageView.INVISIBLE
         );
-
+        tabs.setCurrentTab(savedInstanceState.getInt(CURRENT_TAB));
     }
 
 }

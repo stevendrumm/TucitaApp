@@ -46,7 +46,7 @@ public class FullscreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // acciones que se ejecutan tras los milisegundos
-                if (consultarusuario()) {
+                if (!consultarusuario()) {
                     showProgress(false);
                     Intent actividad = new Intent(FullscreenActivity.this, Principal.class);
                     startActivity(actividad);

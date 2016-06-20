@@ -20,9 +20,9 @@
 
                 <TabWidget android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/blue"
                     android:showDividers="middle"
-                    android:id="@android:id/tabs" />
+                    android:id="@android:id/tabs"
+                    android:background="@color/azulcompleto" />
 
 
 
@@ -45,13 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Reserva de citas medicas"
-                        android:id="@+id/textView2"
-                        android:layout_margin="2dp" />
+
                     <include layout="@layout/tab_cita"/>
                 </LinearLayout>
 
