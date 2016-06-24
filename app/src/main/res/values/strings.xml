@@ -59,6 +59,7 @@
     <string name="title_reserva_cita">Reserva de citas medicas</string>
     <string name="button_reservar_cita_on">Buscando</string>
     <string name="button_reservar_cita_off">Buscar</string>
+    <string name="Toast_ningun_resultado">No se encontraron resultados</string>
 
 
 

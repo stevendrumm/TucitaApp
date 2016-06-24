@@ -1,6 +1,7 @@
 package com.andret199377hotmail.learning.com.tucitaapp;
 
 import android.annotation.TargetApi;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,6 +33,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -54,9 +56,12 @@ import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class Principal extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         HeadlinesFragment.OnHeadlineSelectedListener {
@@ -68,18 +73,20 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
-    String mCurrentPhotoPath;
+    private static final String DIALOGDATEPICKER = "dialogDatepicker";
+    private String mCurrentPhotoPath;
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
     private ImageView mImageView;
     private Bitmap mImageBitmap;
     private SQLiteDatabase db;
-    DatePicker fecha;
-    Spinner centroproduccion;
+    private DatePickerDialog fechadialog;
+    private EditText fecha;
+    private Spinner centroproduccion;
     private View mProgressView;
     private View mCitaFormView;
-    ToggleButton buscar;
-    HeadlinesFragment firstFragment;
-    ImageButton picbtn;
+    public ToggleButton buscar;
+    public HeadlinesFragment firstFragment;
+    private ImageButton picbtn;
     TextView documento;
     TextView tipo;
     TextView nombre1;
@@ -89,6 +96,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     TabHost tabs;
     Toolbar toolbar;
     DrawerLayout drawer;
+    public TextView usuario;
+    FrameLayout layout;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -104,14 +113,19 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         setContentView(R.layout.activity_principal);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fecha = (DatePicker) findViewById(R.id.datePickerFechaCita);
+        fecha = (EditText) findViewById(R.id.datePickerFechaCita);
         centroproduccion = (Spinner) findViewById(R.id.spinnerCentroProduccion);
         poblarSpinner(centroproduccion);
         tabs=(TabHost)findViewById(android.R.id.tabhost);
         poblartab(tabs);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        configurarDrawerLayout(drawer);
-        buscar = (ToggleButton) findViewById(R.id.toggleButtonBuscar);
+        configurarDrawerLayout(drawer,toolbar);
+        buscar = (ToggleButton) findViewById(R.id.toggleButton);
+        configurarSetOnclickListener();
+        usuario = (TextView)findViewById(R.id.txtResultado);
+        llenarUsuariosLogueados();
+        layout = (FrameLayout) findViewById(R.id.firts_fragment_container);
+
         mCitaFormView = findViewById(R.id.cita_form);
         documento = (TextView) findViewById(R.id.documento);
         tipo = (TextView) findViewById(R.id.tipo);
@@ -227,9 +241,9 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         return true;
     }
 
-    public void configurarDrawerLayout(DrawerLayout drawer){
+    public void configurarDrawerLayout(DrawerLayout drawer, Toolbar tool){
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, tool, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -245,14 +259,12 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void poblartab(TabHost tabs){
         tabs.setup();
         TabHost.TabSpec spec= this.tabs.newTabSpec("perfil");
         spec.setContent(R.id.tab1);
         spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_perm_identity_white_24dp));
         this.tabs.addTab(spec);
-
 
         spec= this.tabs.newTabSpec("cita");
         spec.setContent(R.id.tab2);
@@ -268,7 +280,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
     }
 
-
     public void cerrarSesion() {
         LoginSQLiteHelper Ldbh = new LoginSQLiteHelper(this);
         db = Ldbh.getWritableDatabase();
@@ -279,6 +290,33 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, null);
     }
 
+    public void configurarSetOnclickListener(){
+        buscar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if(buscar.isChecked()){
+
+                    cargarHorasCitas();
+                    layout.setVisibility(View.VISIBLE);
+                    mCitaFormView.setVisibility(View.GONE);
+
+
+
+                }else{
+
+                    layout.setVisibility(View.GONE);
+                    mCitaFormView.setVisibility(View.VISIBLE);
+
+                }
+
+
+            }
+
+
+        });
+
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -345,12 +383,29 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
     }
 
+    public void stateListFragment(boolean state){
+        layout = (FrameLayout) findViewById(R.id.firts_fragment_container);
+        if(state){
+            mCitaFormView.setVisibility(View.GONE);
+            layout.setVisibility(View.VISIBLE);
+
+
+        }else{
+            layout.setVisibility(View.GONE);
+            mCitaFormView.setVisibility(View.VISIBLE);
+            //getSupportFragmentManager().beginTransaction().remove(firstFragment).commit();
+            buscar.setChecked(false);
+        }
+
+
+    }
+
     private void cargarHorasCitas() {
         if (findViewById(R.id.firts_fragment_container) != null) {
             firstFragment = new HeadlinesFragment();
             Bundle args = new Bundle();
-            args.putString(HeadlinesFragment.NOMBREFECHA, convertir(fecha.getYear())+"-"+convertir(fecha.getMonth()+1)+"-"+convertir(fecha.getDayOfMonth()));
-            Log.i("fecha", convertir(fecha.getYear())+"-"+convertir(fecha.getMonth()+1)+"-"+convertir(fecha.getDayOfMonth()));
+            args.putString(HeadlinesFragment.NOMBREFECHA, fecha.getText().toString());
+            Log.i("fecha", fecha.getText().toString());
             switch (centroproduccion.getSelectedItemPosition()) {
                 case 0:
                     args.putString(HeadlinesFragment.CENTROPRODUCCION, "1110");
@@ -364,21 +419,6 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
             firstFragment.setArguments(args);
 
             getSupportFragmentManager().beginTransaction().replace(R.id.firts_fragment_container, firstFragment).commit();
-
-        }
-
-    }
-
-    public void mostrar(View v){
-        FrameLayout layout = (FrameLayout) findViewById(R.id.firts_fragment_container);
-        if(buscar.isChecked()){
-            mCitaFormView.setVisibility(View.GONE);
-            layout.setVisibility(View.VISIBLE);
-
-            cargarHorasCitas();
-        }else{
-            layout.setVisibility(View.GONE);
-            mCitaFormView.setVisibility(View.VISIBLE);
 
         }
 
@@ -462,13 +502,13 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         dialogo1.setCancelable(false);
         dialogo1.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo1, int id) {
-                dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
+                dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
+
             }
         });
         dialogo1.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo1, int id) {
-                dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
-
+                dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
             }
         });
         dialogo1.show();
@@ -570,8 +610,60 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         mCurrentPhotoPath = Uri.fromFile(f).getEncodedPath();
         //String[] selectionArgs = {1};
         db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, null);
+        long num = db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, null);
+        Log.i("actualizar_ruta",String.valueOf(num));
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+    }
+
+    public void llenarUsuariosLogueados(){
+        LoginSQLiteHelper usdbh = new LoginSQLiteHelper(this);
+
+        db = usdbh.getWritableDatabase();
+        String[] projection = {
+                FeedReaderContract.FeedEntry._ID,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_TIPO,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_DOCUMENTO,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERNOMBRE,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDONOMBRE,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_PRIMERAPELLIDO,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_SEGUNDOAPELLIDO,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_PHOTO_ROUTE
+        };
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                FeedReaderContract.FeedEntry._ID + " DESC";
+
+        Cursor c = db.query(FeedReaderContract.FeedEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
+
+        //Recorremos los resultados para mostrarlos en pantalla
+        usuario.setText("");
+        if (c.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya m�s registros
+            do {
+                String cod = c.getString(0);
+                String til = c.getString(1);
+                String sub = c.getString(2);
+                String a = c.getString(3);
+                String b = c.getString(4);
+                String ca = c.getString(5);
+                String d = c.getString(6);
+                String e = c.getString(7);
+                String f = c.getString(8);
+
+                usuario.append(" " + cod + " " + til + " " +sub+" " + a +" " + b +" " +ca+" " + d + "  " + e + " " +f+"\n");
+            } while(c.moveToNext());
+					/*Cursor c = db.query(
+							FeedEntry.TABLE_NAME,  // The table to query
+							projection,                               // The columns to return
+							selection,                                // The columns for the WHERE clause
+							selectionArgs,                            // The values for the WHERE clause
+							null,                                     // don't group the rows
+							null,                                     // don't filter by row groups
+							sortOrder                                 // The sort order
+					);*/
+        }
     }
 
     private void dispatchTakePictureIntent(int actionCode) {
@@ -592,7 +684,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                     valores.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PHOTO_ROUTE, Uri.fromFile(f).getEncodedPath());
                     String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_STATE_LOGIN + " = 1";
                     mCurrentPhotoPath = Uri.fromFile(f).getEncodedPath();
-                    db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, null);
+                    long num = db.update(FeedReaderContract.FeedEntry.TABLE_NAME, valores, selection, null);
+                    Log.i("actualizar_ruta",String.valueOf(num));
                 } catch (IOException e) {
                     e.printStackTrace();
                     f = null;
@@ -651,6 +744,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
         outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
+        //outState.putParcelable(DIALOGDATEPICKER,DatePickerDialog);
         outState.putInt(CURRENT_TAB,tabs.getCurrentTab());
 
 
@@ -661,13 +755,45 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
+        if(mImageBitmap!=null){
+            mImageView.setImageBitmap(mImageBitmap);
+            mImageView.setVisibility(
+                    savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
+                            ImageView.VISIBLE : ImageView.INVISIBLE
+            );
 
-        mImageView.setImageBitmap(mImageBitmap);
-        mImageView.setVisibility(
-                savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
-                        ImageView.VISIBLE : ImageView.INVISIBLE
-        );
+        }
+
+
         tabs.setCurrentTab(savedInstanceState.getInt(CURRENT_TAB));
     }
+
+    public void mostrarDatepicker(View v){
+
+        fechadialog = new DatePickerDialog(Principal.this, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                //Toast.makeText(Principal.this, String.valueOf(convertir(view.getYear()))+String.valueOf(convertir(view.getMonth()+1))+String.valueOf(convertir(view.getDayOfMonth()+1)),Toast.LENGTH_LONG).show();
+                String valorfecha = String.valueOf(convertir(view.getYear()))+"-"+String.valueOf(convertir(view.getMonth()+1))+"-"+String.valueOf(convertir(view.getDayOfMonth()));
+                fecha.setText(valorfecha);
+            }
+        }, Integer.parseInt(obtenerFechaSistema("yyyy")),Integer.parseInt(obtenerFechaSistema("MM"))-1,Integer.parseInt(obtenerFechaSistema("dd")));
+        fechadialog.setIcon(getApplicationContext().getDrawable(R.drawable.ic_event_white_48dp));
+        fechadialog.show();
+
+    }
+
+    private String obtenerFechaSistema(String formato){
+
+        Locale l = new Locale("es","CO");
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/Colombia/Bogota"),l);
+        Date date = cal.getTime();
+        SimpleDateFormat df = new SimpleDateFormat(formato, l);
+        String formatteDate = df.format(date);
+        return formatteDate;
+    }
+
+
 
 }

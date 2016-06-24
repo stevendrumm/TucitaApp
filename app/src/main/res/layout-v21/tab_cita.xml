@@ -39,8 +39,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/datePickerFechaCita"
                 android:hint="Haga click para buscar la fecha"
-                android:onClick="mostrarDatepicker" />
-
+                android:onClick="mostrarDatepicker"/>
         </LinearLayout>
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"

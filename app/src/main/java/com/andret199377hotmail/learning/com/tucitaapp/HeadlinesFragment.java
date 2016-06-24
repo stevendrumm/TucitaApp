@@ -46,9 +46,11 @@ import java.util.List;
 
 public class HeadlinesFragment extends ListFragment {
     OnHeadlineSelectedListener mCallback;
+
     final static String NOMBREFECHA = "FECHA";
     final static String CENTROPRODUCCION = "CENTROPRODUCCION";
     List<Cita> citas = new ArrayList<Cita>();
+    public AsyncTask<String, Void, List<Cita>> MyAsynctask =null;
     String fecha;
     String centroproduccion;
 
@@ -56,6 +58,7 @@ public class HeadlinesFragment extends ListFragment {
     public interface OnHeadlineSelectedListener {
         /** Called by HeadlinesFragment when a list item is selected */
         void onArticleSelected(int position, String itemAtPosition);
+        void stateListFragment(boolean state);
     }
 
     @Override
@@ -71,20 +74,15 @@ public class HeadlinesFragment extends ListFragment {
                 fecha = extras.getString(NOMBREFECHA);
                 centroproduccion = extras.getString(CENTROPRODUCCION);
                 Log.i("valores",fecha.toString().concat(" "+centroproduccion));
+                String urlcita = "http://186.170.16.38/api/citas/cita.php";
+                MyAsynctask = new CitasHoraTask();
+                MyAsynctask.execute(fecha, centroproduccion, urlcita);
             }
         }
 
-        String urlcita = "http://186.170.16.38/api/citas/cita.php";
-        new CitasHoraTask().execute(fecha, centroproduccion, urlcita);
-
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -211,13 +209,20 @@ public class HeadlinesFragment extends ListFragment {
                     nombreArrayList[i]=citas.get(i).FECHA;
                 }
                 setListAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,nombreArrayList));
+                mCallback.stateListFragment(true);
 
 
             }else{
-               Toast.makeText(getContext(),"No se encontraron resultados", Toast.LENGTH_LONG).show();
+               Toast.makeText(getContext(),R.string.Toast_ningun_resultado, Toast.LENGTH_LONG).show();
+                mCallback.stateListFragment(false);
+
+
             }
 
         }
+
+
+
     }
 
 

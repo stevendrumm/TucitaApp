@@ -8,7 +8,6 @@
     tools:context="com.andret199377hotmail.learning.com.tucitaapp.Principal"
     tools:showIn="@layout/app_bar_principal">
 
-
     <TabHost android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -54,12 +53,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible">
-                    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:id="@+id/second_fragment_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                   <include layout="@layout/tab_admin"/>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
+
     </TabHost>
+
 </RelativeLayout>
