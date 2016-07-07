@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -49,10 +50,13 @@ public class HeadlinesFragment extends ListFragment {
 
     final static String NOMBREFECHA = "FECHA";
     final static String CENTROPRODUCCION = "CENTROPRODUCCION";
-    List<Cita> citas = new ArrayList<Cita>();
+    final static String PROFESIONAL = "PROFESIONAL";
+    private ArrayList<Cita> citas=new ArrayList<Cita>();
+
     public AsyncTask<String, Void, List<Cita>> MyAsynctask =null;
     String fecha;
     String centroproduccion;
+    String profesional;
 
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnHeadlineSelectedListener {
@@ -70,13 +74,15 @@ public class HeadlinesFragment extends ListFragment {
             if (extras == null) {
                 fecha = null;
                 centroproduccion = null;
+                profesional = null;
             } else {
                 fecha = extras.getString(NOMBREFECHA);
                 centroproduccion = extras.getString(CENTROPRODUCCION);
-                Log.i("valores",fecha.toString().concat(" "+centroproduccion));
+                profesional = extras.getString(PROFESIONAL);
+                Log.i("valores",fecha.toString().concat(" "+centroproduccion).concat(" "+profesional));
                 String urlcita = "http://186.170.16.38/api/citas/cita.php";
                 MyAsynctask = new CitasHoraTask();
-                MyAsynctask.execute(fecha, centroproduccion, urlcita);
+                MyAsynctask.execute(fecha, centroproduccion, profesional, urlcita);
             }
         }
 
@@ -102,7 +108,7 @@ public class HeadlinesFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Notify the parent activity of selected item
 
-        mCallback.onArticleSelected(position, l.getItemAtPosition(position).toString());
+        mCallback.onArticleSelected(position, citas.get(position).FECHA);
 
 
         getListView().setItemChecked(position, true);
@@ -116,6 +122,7 @@ public class HeadlinesFragment extends ListFragment {
             // TODO: attempt authentication against a network service.
 
             String fecha = null;
+            String hora = null;
             String centroproduccion = null;
             String ips = null;
             int tipo_solicitud = 0;
@@ -127,8 +134,8 @@ public class HeadlinesFragment extends ListFragment {
             Cita response = null;
 
             try {
-                URL login = new URL(params[2]);
-                Log.i("error", params[2]);
+                URL login = new URL(params[3]);
+                Log.i("error", params[3]);
                 conn = (HttpURLConnection) login.openConnection();
                 conn.setReadTimeout(10000);
                 conn.setConnectTimeout(15000);
@@ -137,7 +144,8 @@ public class HeadlinesFragment extends ListFragment {
                 conn.setDoOutput(true);
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("FECHA", params[0])
-                        .appendQueryParameter("CENTROPRODUCCION", params[1]);
+                        .appendQueryParameter("CENTROPRODUCCION", params[1])
+                        .appendQueryParameter("PROFESIONAL", params[2]);
                 String query = builder.build().getEncodedQuery();
 
                 OutputStream os = conn.getOutputStream();
@@ -160,7 +168,10 @@ public class HeadlinesFragment extends ListFragment {
 
                             if (name.equals("FECHA")) {
                                 fecha = reader.nextString();
-                                Log.i("fecha",fecha);
+                                Log.i("fecha", fecha);
+                            }else if (name.equals("HORA")){
+                                hora = reader.nextString();
+                                Log.i("hora", hora);
                             } else if (name.equals("CENTROPROD")) {
                                 centroproduccion = reader.nextString();
                                 Log.i("fecha",centroproduccion);
@@ -178,7 +189,7 @@ public class HeadlinesFragment extends ListFragment {
                             }
                         }
                         reader.endObject();
-                        citas.add(new Cita(fecha, centroproduccion, ips, tipo_solicitud, estado ));
+                        citas.add(new Cita(fecha, hora, centroproduccion, ips, tipo_solicitud, estado ));
                     }
                     reader.endArray();
                     //return citas;
@@ -206,9 +217,9 @@ public class HeadlinesFragment extends ListFragment {
             if(citas !=null){
                 String[] nombreArrayList = new String[citas.size()];
                 for (int i=0;i<citas.size();i++){
-                    nombreArrayList[i]=citas.get(i).FECHA;
+                    nombreArrayList[i]=citas.get(i).HORA;
                 }
-                setListAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,nombreArrayList));
+                setListAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.select_dialog_item,nombreArrayList));
                 mCallback.stateListFragment(true);
 
 
@@ -226,6 +237,8 @@ public class HeadlinesFragment extends ListFragment {
     }
 
 
+
+
     public List readCitaArray(JsonReader reader) throws IOException {
 
         reader.beginArray();
@@ -238,6 +251,7 @@ public class HeadlinesFragment extends ListFragment {
 
     public Cita readCita(JsonReader reader) throws IOException {
         String fecha = null;
+        String hora = null;
         String centroproduccion = null;
         String ips = null;
         int tipo_solicitud = Integer.parseInt(null);
@@ -269,7 +283,7 @@ public class HeadlinesFragment extends ListFragment {
             }
         }
         reader.endObject();
-        return new Cita(fecha, centroproduccion, ips, tipo_solicitud, estado );
+        return new Cita(fecha,hora ,centroproduccion, ips, tipo_solicitud, estado );
 
     }
 

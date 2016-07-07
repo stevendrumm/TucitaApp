@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,44 +22,300 @@
             android:gravity="center"
             android:textColor="@color/negrotransparencia60" />
 
+        <ProgressBar
+            android:id="@+id/login_progress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_gravity="center_vertical"
+            android:mirrorForRtl="false"
+            android:layout_margin="80dp" />
+
+        <LinearLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="30dp"
+            android:layout_margin="5dp"
+            android:visibility="visible">
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/spinnerTipoDocumento"
+                android:prompt="@string/prompt_spinner"
+                android:spinnerMode="dialog"
+                android:layout_margin="5dp" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1">
+
+                <AutoCompleteTextView
+                    android:id="@+id/numdocumento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_documento"
+                    android:inputType="number|text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:drawableLeft="@drawable/ic_perm_identity_black_48dp"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/email_sign_in_button"
+                android:drawableLeft="@drawable/ic_search_white_48dp"
+                android:background="@drawable/stylebutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:accessibilityLiveRegion="none"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:textColor="@color/blanco"
+                android:singleLine="false" />
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/cita_form"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="30dp">
+            android:padding="30dp"
+            android:visibility="gone"
+            android:transitionGroup="true">
 
-            <Spinner
+
+            <LinearLayout
+                android:id="@+id/camposdatousuario"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:visibility="visible">
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/FechaCita"
+                        android:text="Fecha"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <ImageButton
+                        android:id="@+id/buscarFechacita"
+                        android:src="@drawable/ic_today_white_48dp"
+                        android:background="@drawable/stylebutton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:accessibilityLiveRegion="none"
+                        android:layout_gravity="center_horizontal"
+                        android:onClick="mostrarDatepicker"
+                        android:textColor="@color/blanco"
+                        android:singleLine="false"
+                        android:layout_weight="0.2" />
+                </LinearLayout>
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/spinnerCentroProduccion"
+                    android:spinnerMode="dialog"
+                    android:layout_margin="5dp"
+                    android:prompt="@string/prompt_spinner_centro" />
+
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/spinnerProfesional"
+                    android:layout_margin="5dp"
+                    android:prompt="@string/prompt_spinner_profesional"
+                    android:spinnerMode="dialog" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/prompt_documento"
+                        android:id="@+id/textViewDocumento"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/documento"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/prompt_tipo"
+                        android:id="@+id/textViewTipoDocumento"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_weight="1" />
+                    <TextView
+                        android:layout_height="0dp"
+                        android:layout_width="0dp"
+                        android:id="@+id/tipodocumento"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/tipo"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/negrotransparencia30"
+                    android:orientation="horizontal"
+                    />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/prompt_nombre1"
+                        android:id="@+id/textView3"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/Nombre1"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/prompt_nombre2"
+                        android:id="@+id/textView5"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/Nombre2"
+                        android:layout_weight="1" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/negrotransparencia30"
+                    android:orientation="horizontal" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/prompt_apellido1"
+                        android:id="@+id/textView7"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/Apellido1"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/prompt_apellido2"
+                        android:id="@+id/textView9"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/Apellido2"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/firts_fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:visibility="gone"/>
+
+            <ToggleButton
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/spinnerCentroProduccion"
-                android:spinnerMode="dialog" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/datePickerFechaCita"
-                android:hint="Haga click para buscar la fecha"
-                android:onClick="mostrarDatepicker"/>
+                android:text="@string/buscar"
+                android:id="@+id/toggleButton"
+                android:textOn="@string/button_reservar_cita_on"
+                android:textOff="@string/button_reservar_cita_off"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:background="@drawable/toggle_button_bgc"
+                android:textColor="@color/blanco"
+                />
+
         </LinearLayout>
-
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/firts_fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
-        <ToggleButton
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/buscar"
-            android:id="@+id/toggleButton"
-            android:textOn="@string/button_reservar_cita_on"
-            android:textOff="@string/button_reservar_cita_off"
-            android:paddingEnd="2dp"
-            android:paddingStart="2dp"
-            android:background="@drawable/toggle_button_bgc"
-            android:textColor="@color/blanco"
-             />
 
     </LinearLayout>
 </ScrollView>

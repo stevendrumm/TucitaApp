@@ -83,7 +83,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
                 android:textColor="@color/blanco"
-                android:singleLine="false" />
+                android:singleLine="false"
+                android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
     </ScrollView>

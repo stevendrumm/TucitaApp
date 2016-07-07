@@ -34,7 +34,7 @@ public class FullscreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fullscreen);
         mProgressView = findViewById(R.id.login_progress);
         principal = (TextView) findViewById(R.id.fullscreen_content);
-        String font_path = "fonts/UbuntuMono-BI.ttf";
+        String font_path = "fonts/Ubuntu-C.ttf";
         Typeface font = Typeface.createFromAsset(getAssets(),font_path);
         principal.setTypeface(font);
         showProgress(true);
@@ -46,15 +46,16 @@ public class FullscreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // acciones que se ejecutan tras los milisegundos
-                if (consultarusuario()) {
+                //if (consultarusuario()) {
                     showProgress(false);
                     Intent actividad = new Intent(FullscreenActivity.this, Principal.class);
                     startActivity(actividad);
-                } else {
+
+               /* } else {
                     showProgress(false);
                     Intent actividad = new Intent(FullscreenActivity.this, LoginActivity.class);
                     startActivity(actividad);
-                }
+                }*/
             }
         }, milisegundos);
     }

@@ -10,6 +10,8 @@
 
     <!-- Strings related to login -->
     <string name="prompt_spinner">Selecccione tipo de documento</string>
+    <string name="prompt_spinner_centro">Seleccione el centro de produccion</string>
+    <string name="prompt_spinner_profesional">Seleccione el profesional de preferencia</string>
     <string name="prompt_documento">Documento</string>
     <string-array name="TipoDocumento">
         <item>Cedula de ciudadania</item>
