@@ -125,7 +125,7 @@ public class HeadlinesFragment extends ListFragment {
             String hora = null;
             String centroproduccion = null;
             String ips = null;
-            int tipo_solicitud = 0;
+            Integer tipo_solicitud = null;
             int estado = 0;
 
 
@@ -172,16 +172,17 @@ public class HeadlinesFragment extends ListFragment {
                             }else if (name.equals("HORA")){
                                 hora = reader.nextString();
                                 Log.i("hora", hora);
-                            } else if (name.equals("CENTROPROD")) {
+                            }/* else if (name.equals("CENTROPROD")) {
                                 centroproduccion = reader.nextString();
                                 Log.i("fecha",centroproduccion);
                             } else if (name.equals("IPS")) {
                                 ips = reader.nextString();
                                 Log.i("fecha",ips);
                             } else if (name.equals("TIPO_SOLICITUD")) {
-                                tipo_solicitud = reader.nextInt();
+                                tipo_solicitud = reader.nextNull();
                                 Log.i("fecha",String.valueOf(tipo_solicitud));
-                            } else if (name.equals("ESTADO")){
+                            } */
+                            else if (name.equals("ESTADO")){
                                 estado = reader.nextInt();
                                 Log.i("fecha",String.valueOf(estado));
                             } else {
@@ -189,7 +190,7 @@ public class HeadlinesFragment extends ListFragment {
                             }
                         }
                         reader.endObject();
-                        citas.add(new Cita(fecha, hora, centroproduccion, ips, tipo_solicitud, estado ));
+                        citas.add(new Cita(fecha, hora, estado ));//centroproduccion, ips, tipo_solicitud
                     }
                     reader.endArray();
                     //return citas;
@@ -283,7 +284,7 @@ public class HeadlinesFragment extends ListFragment {
             }
         }
         reader.endObject();
-        return new Cita(fecha,hora ,centroproduccion, ips, tipo_solicitud, estado );
+        return new Cita(fecha,hora , estado );//centroproduccion, ips, tipo_solicitud
 
     }
 

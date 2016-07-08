@@ -6,7 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/citas_form"
     android:padding="5dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:visibility="visible">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,8 +38,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="50dp"
-            android:layout_margin="5dp">
+            android:padding="30dp"
+            android:layout_margin="5dp"
+            android:visibility="visible">
 
             <Spinner
                 android:layout_width="match_parent"
@@ -64,6 +66,7 @@
                     android:drawableLeft="@drawable/ic_perm_identity_black_48dp"/>
 
             </android.support.design.widget.TextInputLayout>
+
             <Button
                 android:id="@+id/email_sign_in_button"
                 android:drawableLeft="@drawable/ic_search_white_48dp"
@@ -84,8 +87,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="50dp"
-            android:visibility="visible"
+            android:padding="30dp"
+            android:visibility="gone"
             android:transitionGroup="true">
 
 
@@ -98,19 +101,50 @@
                 android:visibility="visible">
 
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/FechaCita"
+                        android:text="Fecha"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <ImageButton
+                        android:id="@+id/buscarFechacita"
+                        android:src="@drawable/ic_today_white_48dp"
+                        android:background="@drawable/stylebutton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:accessibilityLiveRegion="none"
+                        android:layout_gravity="center_horizontal"
+                        android:onClick="mostrarDatepicker"
+                        android:textColor="@color/blanco"
+                        android:singleLine="false"
+                        android:layout_weight="0.2" />
+                </LinearLayout>
+
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/spinnerCentroProduccion"
-                    android:spinnerMode="dialog" />
+                    android:spinnerMode="dialog"
+                    android:layout_margin="5dp"
+                    android:prompt="@string/prompt_spinner_centro" />
 
-                <EditText
+
+                <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/FechaCita"
-                    android:hint="Haga click para buscar la fecha"
-                    android:onClick="mostrarDatepicker"
-                    android:inputType="date" />
+                    android:id="@+id/spinnerProfesional"
+                    android:layout_margin="5dp"
+                    android:prompt="@string/prompt_spinner_profesional"
+                    android:spinnerMode="dialog" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -266,7 +300,7 @@
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/firts_fragment_container"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="300dp"
                 android:visibility="gone"/>
 
             <ToggleButton

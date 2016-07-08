@@ -17,12 +17,13 @@ public class Cita {
 
 
 
-    public Cita(String fecha, String hora, String centroproduccion, String ips, int tipo_solicitud, int estado) {
+    public Cita(String fecha, String hora,  int estado) {//String centroproduccion, String ips, int tipo_solicitud,
         this.FECHA = fecha;
         this.HORA = hora;
+        /*
         this.CENTROPRODUCCION = centroproduccion;
         this.IPS = ips;
-        this.TIPO_SOLICITUD = tipo_solicitud;
+        this.TIPO_SOLICITUD = tipo_solicitud;*/
         this.ESTADO = estado;
 
     }

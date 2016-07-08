@@ -365,16 +365,16 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     }
 
     public void poblarSpinnerTipoDocum(){
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDocumento, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDocumento, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_view_item);
         mTipoDocumentoView.setAdapter(adapter);
 
     }
 
     public void poblarSpinnerCentroProduc(){
 
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDeCita, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDeCita, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_view_item);
         centroproduccion.setAdapter(adapter);
         centroproduccion.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -403,7 +403,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 centroProduccionProfesional = "1301";
                 break;
         }
-        AsyncTask buscar = new buscarProfesional().execute(fechaProfesional, centroProduccionProfesional, "http://186.170.16.38/inc/buscar-profesional.php");
+        new buscarProfesional().execute(fechaProfesional, centroProduccionProfesional, "http://186.170.16.38/inc/buscar-profesional.php");
     }
 
     public void poblartab(final TabHost tabs){
@@ -536,13 +536,25 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 String urlcita = "http://186.170.16.38/api/citas/actualizarcita.php";
                 String tipoDocumento = Integer.toString(mTipoDocumentoView.getSelectedItemPosition() + 1);
                 String Documento = mDocumentoView.getText().toString();
-                String centro = Integer.toString(centroproduccion.getSelectedItemPosition());
+                String centro = null;
+                int item = centroproduccion.getSelectedItemPosition();
+                switch(item){
+                    case 0:
+                        centro = "1110";
+                        break;
+                    case 1:
+                        centro = "1301";
+                        break;
+                }
+
                 String primernombre = nombre1.getText().toString();
                 String segundonombre = nombre2.getText().toString();
                 String primerapellido = apellido1.getText().toString();
                 String segundoapellido = apellido2.getText().toString();
+                String codigo = profesionales.get(profesional.getSelectedItemPosition()).CODIGO;
+                Log.i("cita",tipoDocumento+" "+Documento+" "+itemAtPosition+" "+centro+" "+primernombre+" "+segundonombre+" "+primerapellido+" "+segundoapellido+" "+codigo);
                 MyReservaTask = new ReservaCitaTask();
-                MyReservaTask.execute(urlcita,tipoDocumento,Documento,itemAtPosition, centro, primernombre, segundonombre, primerapellido, segundoapellido);
+                MyReservaTask.execute(urlcita,tipoDocumento,Documento,itemAtPosition, centro, primernombre, segundonombre, primerapellido, segundoapellido, codigo);
 
 
 
@@ -815,9 +827,9 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 for (int i=0;i<profesionales.size();i++){
                     nombreArrayList[i]=profesionales.get(i).NOMBRE;
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, nombreArrayList);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, nombreArrayList);
 
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                adapter.setDropDownViewResource(R.layout.spinner_view_item);
 
                 profesional.setAdapter(adapter);
 
@@ -974,7 +986,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                         .appendQueryParameter("PRIMERNOMBRE", params[5])
                         .appendQueryParameter("SEGUNDONOMBRE", params[6])
                         .appendQueryParameter("PRIMERAPELLIDO", params[7])
-                        .appendQueryParameter("SEGUNDOAPELLIDO", params[8]);
+                        .appendQueryParameter("SEGUNDOAPELLIDO", params[8])
+                        .appendQueryParameter("CODIGO", params[9]);
                 String query = builder.build().getEncodedQuery();
 
                 OutputStream os = conn.getOutputStream();
@@ -995,23 +1008,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                         Log.i("mensaje",name);
 
                         switch (name) {
-                            case "fecha":
-                                reader.beginObject();
-                                while (reader.hasNext()){
-                                    String name1 = reader.nextName();
-                                    switch(name1){
-                                        case "date":
-                                            resultado = reader.nextString();
-                                            Log.i("MENSAJE", resultado);
-                                            break;
-                                        default:
-                                            reader.skipValue();
-
-                                    }
-
-                                }
-                                reader.endObject();
-
+                            case "mensaje":
+                                resultado = reader.nextString();
                                 break;
 
                             default:
@@ -1039,8 +1037,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
         }
         protected void onPostExecute(String mensaje){
-            Log.i("MENSAJE", mensaje);
-            Toast.makeText(getApplication().getBaseContext(),"Cita Reservada para:"+mensaje, Toast.LENGTH_LONG).show();
+            //Log.i("MENSAJE", mensaje);
+            Toast.makeText(getApplication().getBaseContext(),"Cita asignada :"+mensaje, Toast.LENGTH_LONG).show();
             /*if (mensaje.compareTo("actualizado")==1) {
 
 
