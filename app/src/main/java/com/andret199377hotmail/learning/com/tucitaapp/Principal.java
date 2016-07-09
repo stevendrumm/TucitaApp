@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.app.WallpaperManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -144,17 +145,34 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_principal);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+        {
+
+            setContentView(R.layout.activity_principal);
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            configurarDrawerLayout(drawer,toolbar);
+            tabs = (TabHost) findViewById(android.R.id.tabhost);
+            poblartab21(tabs);
+
+        }
+        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT)
+        {
+
+            setContentView(R.layout.app_bar_principal);
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            tabs = (TabHost) findViewById(android.R.id.tabhost);
+            poblartab19(tabs);
+        }
+
         fecha = (TextView) findViewById(R.id.FechaCita);
         centroproduccion = (Spinner) findViewById(R.id.spinnerCentroProduccion);
         poblarSpinnerCentroProduc();
         profesional = (Spinner) findViewById(R.id.spinnerProfesional);
-        tabs = (TabHost) findViewById(android.R.id.tabhost);
-        poblartab(tabs);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        configurarDrawerLayout(drawer,toolbar);
+
+
         buscar = (ToggleButton) findViewById(R.id.toggleButton);
         configurarSetOnclickListener();
         usuario = (TextView)findViewById(R.id.txtResultado);
@@ -197,6 +215,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -406,7 +426,8 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         new buscarProfesional().execute(fechaProfesional, centroProduccionProfesional, "http://186.170.16.38/inc/buscar-profesional.php");
     }
 
-    public void poblartab(final TabHost tabs){
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void poblartab21(final TabHost tabs){
         /*
         tabs.setup();
         TabHost.TabSpec spec= this.tabs.newTabSpec("Perfil");
@@ -417,12 +438,37 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         tabs.setup();
         TabHost.TabSpec spec= this.tabs.newTabSpec("Cita");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_list_white_36dp));
+        spec.setIndicator("",getApplicationContext().getDrawable(R.drawable.ic_list_white_24dp));
         this.tabs.addTab(spec);
 
         spec= this.tabs.newTabSpec("Configuracion");
         spec.setContent(R.id.tab3);
         spec.setIndicator("", getApplicationContext().getDrawable(R.drawable.ic_settings_white_36dp));
+        this.tabs.addTab(spec);
+
+        tabs.setCurrentTab(0);
+
+        tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                getSupportActionBar().setTitle(tabId);
+
+            }
+        });
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void poblartab19(final TabHost tabs){
+        tabs.setup();
+        TabHost.TabSpec spec= this.tabs.newTabSpec("Cita");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("", getResources().getDrawable(R.drawable.ic_list_white_36dp));
+        this.tabs.addTab(spec);
+
+        spec= this.tabs.newTabSpec("Configuracion");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("", getResources().getDrawable(R.drawable.ic_settings_white_36dp));
         this.tabs.addTab(spec);
 
         tabs.setCurrentTab(0);
@@ -727,7 +773,17 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 fecha.setText(valorfecha);
             }
         }, Integer.parseInt(obtenerFechaSistema("yyyy")), Integer.parseInt(obtenerFechaSistema("MM")) - 1, Integer.parseInt(obtenerFechaSistema("dd")));
-        fechadialog.setIcon(getApplicationContext().getDrawable(R.drawable.ic_event_white_48dp));
+        switch (Build.VERSION.SDK_INT){
+            case Build.VERSION_CODES.LOLLIPOP:
+                fechadialog.setIcon(getApplicationContext().getDrawable(R.drawable.ic_event_white_48dp));
+                break;
+            case Build.VERSION_CODES.KITKAT:
+                fechadialog.setIcon(getResources().getDrawable(R.drawable.ic_event_white_48dp));
+                break;
+
+
+        }
+
         fechadialog.show();
 
     }
