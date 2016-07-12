@@ -40,7 +40,8 @@
             android:orientation="vertical"
             android:padding="30dp"
             android:layout_margin="5dp"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:background="@color/azultransparencia50">
 
             <Spinner
                 android:layout_width="match_parent"
@@ -89,7 +90,8 @@
             android:layout_height="match_parent"
             android:padding="30dp"
             android:visibility="gone"
-            android:transitionGroup="true">
+            android:transitionGroup="true"
+            android:background="@color/moradotransparencia60">
 
 
             <LinearLayout
@@ -111,9 +113,12 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:id="@+id/FechaCita"
-                        android:text="Fecha"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:text="@string/prompt_fecha"
+                        android:textSize="30sp"
+                        android:gravity="left"
+                        android:textColor="#000000"
+                        android:padding="5dip"
+                        android:layout_weight="1" />
 
                     <ImageButton
                         android:id="@+id/buscarFechacita"

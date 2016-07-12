@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -72,6 +73,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -326,7 +328,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 break;
 
             case R.id.salir:
-                AlertDialog.Builder dialogo2 = new AlertDialog.Builder(this);
+                AlertDialog.Builder dialogo2 = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
                 dialogo2.setTitle(R.string.Important);
                 dialogo2.setMessage(R.string.ExitMessage);
                 dialogo2.setCancelable(false);
@@ -335,14 +337,14 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                         System.exit(0);
                     }
 
-                });/*
+                });
                 dialogo2.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialogo1,int id){
-
+                    public void onClick(DialogInterface dialogo2, int id){
 
                     }
 
-                });*/
+                });
+
                 dialogo2.show();
                 break;
 
@@ -391,23 +393,34 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
     }
 
-    public void poblarSpinnerCentroProduc(){
+    public void poblarSpinnerCentroProduc() {
 
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.TipoDeCita, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_view_item);
         centroproduccion.setAdapter(adapter);
-        centroproduccion.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-                        cargarProfesionales(position);
-                        //Toast.makeText(Principal.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
 
-                    }
+        centroproduccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                    public void onNothingSelected(AdapterView<?> parent) {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position!=0){
+                    cargarProfesionales(position);
+                }
+                else{
+                    if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+                        Snackbar.make(cita_form, "Debes seleccionar un profesional", Snackbar.LENGTH_SHORT).show();
+                    else if(Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT)
+                        Toast.makeText(Principal.this,"Debes seleccionar un profesional", Toast.LENGTH_SHORT).show();
+                    profesional.setAdapter(null);
+                }
 
-                    }
-                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(Principal.this,"haz algo", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -415,11 +428,11 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         String fechaProfesional = fecha.getText().toString();
         String centroProduccionProfesional = null;
         switch (centro) {
-            case 0:
+            case 1:
                 centroProduccionProfesional = "1110";
 
                 break;
-            case 1:
+            case 2:
                 centroProduccionProfesional = "1301";
                 break;
         }
@@ -570,12 +583,12 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
     public void onArticleSelected(int position, final String itemAtPosition) {
         Log.i("hola", itemAtPosition);
 
-        AlertDialog.Builder dialogo3 = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogo3 = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
         dialogo3.setTitle(R.string.Important);
         String mensaje = getString(R.string.CitaMessage);
-        dialogo3.setMessage(mensaje+" "+itemAtPosition+"?" );//
+        dialogo3.setMessage(mensaje+" "+itemAtPosition+" con el profesional: "+profesionales.get(profesional.getSelectedItemPosition()).NOMBRE+"?" );//
         dialogo3.setCancelable(false);
-        AlertDialog.Builder builder = dialogo3.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener() {
+        dialogo3.setPositiveButton(R.string.Confirm, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo2, int id) {
                 //Toast.makeText(getApplicationContext(),itemAtPosition,Toast.LENGTH_LONG).show();
 
@@ -585,10 +598,10 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 String centro = null;
                 int item = centroproduccion.getSelectedItemPosition();
                 switch(item){
-                    case 0:
+                    case 1:
                         centro = "1110";
                         break;
-                    case 1:
+                    case 2:
                         centro = "1301";
                         break;
                 }
@@ -652,11 +665,11 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
             args.putString(HeadlinesFragment.NOMBREFECHA, fecha.getText().toString());
             Log.i("fecha", fecha.getText().toString());
             switch (centroproduccion.getSelectedItemPosition()) {
-                case 0:
+                case 1:
                     args.putString(HeadlinesFragment.CENTROPRODUCCION, "1110");
                     Log.i("error", "1110");
                     break;
-                case 1:
+                case 2:
                     args.putString(HeadlinesFragment.CENTROPRODUCCION, "1301");
                     Log.i("error", "1301");
                     break;
@@ -771,6 +784,9 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 //Toast.makeText(Principal.this, String.valueOf(convertir(view.getYear()))+String.valueOf(convertir(view.getMonth()+1))+String.valueOf(convertir(view.getDayOfMonth()+1)),Toast.LENGTH_LONG).show();
                 String valorfecha = String.valueOf(convertir(view.getYear())) + "-" + String.valueOf(convertir(view.getMonth() + 1)) + "-" + String.valueOf(convertir(view.getDayOfMonth()));
                 fecha.setText(valorfecha);
+                centroproduccion.setSelection(0);
+                profesional.setAdapter(null);
+
             }
         }, Integer.parseInt(obtenerFechaSistema("yyyy")), Integer.parseInt(obtenerFechaSistema("MM")) - 1, Integer.parseInt(obtenerFechaSistema("dd")));
         switch (Build.VERSION.SDK_INT){
@@ -783,7 +799,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
 
 
         }
-
+        fechadialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         fechadialog.show();
 
     }
@@ -890,7 +906,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 profesional.setAdapter(adapter);
 
             }else{
-                Toast.makeText(Principal.this,"Nada de nada", Toast.LENGTH_LONG).show();
+                Toast.makeText(Principal.this,"No se pudieron recuperar los especialistas, seleccion una fecha nueva", Toast.LENGTH_LONG).show();
 
 
             }

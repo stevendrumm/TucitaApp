@@ -9,4 +9,9 @@
 
 
     </style>
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">@color/verdecompleto</item>
+        <item name="android:textColor">@color/verdetransparencia60</item>
+
+    </style>
 </resources>

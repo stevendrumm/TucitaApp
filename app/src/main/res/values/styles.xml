@@ -25,5 +25,10 @@
         <item name="colorPrimaryDark">@color/azuloscurocompleto</item>
         <item name="colorAccent">@color/verdecompleto</item>
     </style>
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+
+        <item name="android:textColor">@color/verdetransparencia60</item>
+        <item name="android:textColorPrimary">@color/moradotransparencia10</item>
+    </style>
 
 </resources>

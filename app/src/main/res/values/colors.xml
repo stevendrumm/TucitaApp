@@ -70,7 +70,6 @@
     <color name="black_overlay">#66000000</color>
 
 
-
     <integer-array name="androidcolors">
         <item>@color/azultransparencia50</item>
         <item>@color/azultransparencia60</item>
