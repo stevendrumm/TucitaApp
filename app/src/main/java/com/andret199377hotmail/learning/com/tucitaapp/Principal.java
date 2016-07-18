@@ -31,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -228,12 +229,12 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            cita_form.setVisibility(show ? View.GONE : View.VISIBLE);
-            cita_form.animate().setDuration(shortAnimTime).alpha(
+            email_login_form.setVisibility(show ? View.GONE : View.VISIBLE);
+            email_login_form.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    cita_form.setVisibility(show ? View.GONE : View.VISIBLE);
+                    email_login_form.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -249,7 +250,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             login_progress.setVisibility(show ? View.VISIBLE : View.GONE);
-            cita_form.setVisibility(show ? View.GONE : View.VISIBLE);
+            email_login_form.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -287,7 +288,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
                 //Toast.makeText(LoginActivity.this, "tipodocumento="+tipoDocumento+"&documento=" + Documento, Toast.LENGTH_LONG).show();
                 if (networkInfo != null && networkInfo.isConnected()) {
-                    AsyncTask tarea = new UserLoginTask().execute(tipoDocumento, Documento, login);
+                    new UserLoginTask().execute(tipoDocumento, Documento, login);
 
                 } else {
                     Toast.makeText(this, "Error de conexión", Toast.LENGTH_LONG).show();
@@ -721,7 +722,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 nombre2.setText(success.getNombre2());
                 apellido1.setText(success.getApellido1());
                 apellido2.setText(success.getApellido2());
-                lineascamposdatousuario.setVisibility(View.VISIBLE);
+
 
     }
 
@@ -850,34 +851,52 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
                 if (statusCode == 200) {
                     InputStream respuesta = new BufferedInputStream(conn.getInputStream());
                     JsonReader reader = new JsonReader(new InputStreamReader(respuesta, "UTF-8"));
-                    reader.beginArray();
-                    while (reader.hasNext()) {
-
-                        reader.beginObject();
+                    if (reader.peek() != JsonToken.BEGIN_OBJECT) {
+                        reader.beginArray();
                         while (reader.hasNext()) {
-                            String name = reader.nextName();
+                            reader.beginObject();
+                            while (reader.hasNext()) {
+                                String name = reader.nextName();
+                                switch (name) {
+                                    case "NOMBRE":
+                                        nombre = reader.nextString();
+                                        Log.i("nombre", nombre);
+                                        break;
+                                    case "CODIGO":
+                                        codigo = reader.nextString();
+                                        Log.i("codigo", codigo);
 
-                            switch (name) {
-                                case "NOMBRE":
+                                        break;
+                                    default:
+                                        reader.skipValue();
+                                        break;
+                                }
+                            }
+                            reader.endObject();
+
+                            profesionales.add(new Profesional(nombre, codigo));
+
+                        }
+                        reader.endArray();
+
+                    }else{
+                        reader.beginObject();
+                        while(reader.hasNext()){
+                            String name = reader.nextName();
+                            switch(name){
+                                case "mensaje":
                                     nombre = reader.nextString();
-                                    Log.i("nombre", nombre);
-                                    break;
-                                case "CODIGO":
-                                    codigo = reader.nextString();
-                                    Log.i("codigo", codigo);
 
                                     break;
                                 default:
                                     reader.skipValue();
                                     break;
                             }
+
                         }
                         reader.endObject();
-
-                        profesionales.add(new Profesional(nombre,codigo));
-
+                        profesionales.add(new Profesional(nombre,null));
                     }
-                    reader.endArray();
                 } else {
                     Log.i("error", String.valueOf(statusCode));
                     profesionales = null;
@@ -894,22 +913,29 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         @Override
         protected void onPostExecute(List<Profesional> profesionales) {
             super.onPostExecute(profesionales);
-            if(profesionales !=null){
-                String[] nombreArrayList = new String[profesionales.size()];
-                for (int i=0;i<profesionales.size();i++){
-                    nombreArrayList[i]=profesionales.get(i).NOMBRE;
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, nombreArrayList);
-
-                adapter.setDropDownViewResource(R.layout.spinner_view_item);
-
-                profesional.setAdapter(adapter);
+            if(profesionales.get(0).NOMBRE.compareTo("no")==0){
+                Snackbar.make(cita_form, "No es posible asignar una cita recomendamos que escojas una fecha mas reciente", Snackbar.LENGTH_LONG).show();
 
             }else{
-                Toast.makeText(Principal.this,"No se pudieron recuperar los especialistas, seleccion una fecha nueva", Toast.LENGTH_LONG).show();
+                if(profesionales !=null){
+                    String[] nombreArrayList = new String[profesionales.size()];
+                    for (int i=0;i<profesionales.size();i++){
+                        nombreArrayList[i]=profesionales.get(i).NOMBRE;
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, nombreArrayList);
 
+                    adapter.setDropDownViewResource(R.layout.spinner_view_item);
+
+                    profesional.setAdapter(adapter);
+
+                }else{
+                    Toast.makeText(Principal.this,"Error en la conexion, no se pudieron recuperar los especialistas", Toast.LENGTH_LONG).show();
+
+
+                }
 
             }
+
 
         }
     }
@@ -1009,26 +1035,26 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         @Override
         protected void onPostExecute(Login success) {
             mAuthTask = null;
-            showProgress(false);
 
-            if (success != null) {
 
-                perfilUsuario(success);
-                cita_form.setVisibility(View.VISIBLE);
-                email_login_form.setVisibility(View.GONE);
+            if (success.TIPDOCUM == null) {
+                Toast.makeText(Principal.this,"Usuario no encontrado", Toast.LENGTH_LONG).show();
+                showProgress(false);
 
 
             }
             else{
-                Toast.makeText(Principal.this,"Usuario no encontrado", Toast.LENGTH_LONG).show();
+                perfilUsuario(success);
+
+                email_login_form.setVisibility(View.GONE);
+
+                cita_form.setVisibility(View.VISIBLE);
+                login_progress.setVisibility(View.GONE);
+
             }
         }
 
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+
     }
 
     private class ReservaCitaTask extends AsyncTask<String, Void, String>{
@@ -1110,7 +1136,7 @@ public class Principal extends AppCompatActivity implements NavigationView.OnNav
         }
         protected void onPostExecute(String mensaje){
             //Log.i("MENSAJE", mensaje);
-            Toast.makeText(getApplication().getBaseContext(),"Cita asignada :"+mensaje, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplication().getBaseContext(),mensaje, Toast.LENGTH_LONG).show();
             /*if (mensaje.compareTo("actualizado")==1) {
 
 
